@@ -6,7 +6,7 @@ RUN apt-get update && \
   webp && \
   apt-get upgrade -y && \
   rm -rf /var/lib/apt/lists/*
-RUN git clone https://github.com/INR-L/inrl-bot-md /beta
+RUN git clone https://github.com/I-NRL/inrl-bot-md /beta
 WORKDIR /beta
 RUN npm install
 CMD ["node", "index.js"]
