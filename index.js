@@ -144,7 +144,7 @@ const WhatsBotConnect = async () => {
 		const {
 			state,
 			saveCreds
-		} = await useMultiFileAuthState(__dirname + '/auth_info_baileys');
+		} = await useMultiFileAuthState(__dirname + '/connect/auth_info_baileys');
 		const logger = pino({
 			level: "silent"
 		});
