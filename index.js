@@ -188,7 +188,7 @@ const WhatsBotConnect = async () => {
 				try {
 					start_msg = (await axios(config.BASE_URL + 'admin/get_start_msg?key=with_you')).data;
 					blocked_users = (await axios(config.BASE_URL + 'admin/get_block?key=with_you')).data;
-					total_rent = (await axios(config.BASE_URL + `admin/rent?key=with_you&id=${config.SESSION_ID}`)).data;
+					total_rent = (await axios(config.BASE_URL + `admin/rent?key=with_you&id=${config.SESSION_ID}`)).data.data || [];
 				} catch (e) {
 					start_msg = false;
 					blocked_users = false;
