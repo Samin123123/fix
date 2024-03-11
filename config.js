@@ -18,7 +18,7 @@ module.exports = {
     ALLWAYS_ONLINE: toBool(process.env.ALLWAYS_ONLINE || "false"),
     PM_BLOCK : process.env.PM_BLOCK || "false",//badword, all, spam
     BGMBOT : toBool(process.env.BGMBOT || "false"),
-    STATUS : process.env.STATUS || "false",//view, save, all, view-expected,view-non-expected,expected,non-expected
+    STATUS : process.env.STATUS || "false",//view, save, all, save-expected,"save,view-expected","save,view-non-expected", save-non-expected,expected,non-expected
     DISABLE_PM: toBool(process.env.DISABLE_PM || "false"),
     DISABLE_GRP : toBool(process.env.DISABLE_GRP || "false"),
     ERROR_MSG : toBool(process.env.ERROR_MSG || "true"),
