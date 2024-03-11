@@ -14,15 +14,11 @@ module.exports = {
     BASE_URL : "https://upper-romy-inrl-bot.koyeb.app/",
     REPO: "inrl-official/inrl-bot-md",
     BGM_URL : process.env.BGM_URL || "null",
-    REJECT_CALL : toBool(process.env.REJECT_CALL || 'false'),
-    BADWORD_BLOCK : toBool(process.env.BADWORD_BLOCK || 'false'),
+    ANTI_CALL : process.env.ANTI_CALL || 'false',//true,block
     ALLWAYS_ONLINE: toBool(process.env.ALLWAYS_ONLINE || "false"),
-    PM_BLOCK : toBool(process.env.PM_BLOCK || "false"),
+    PM_BLOCK : process.env.PM_BLOCK || "false",//badword, all, spam
     BGMBOT : toBool(process.env.BGMBOT || "false"),
-    CALL_BLOCK : toBool(process.env.CALL_BLOCK || "false"),
-    STATUS_VIEW : process.env.STATUS_VIEW || "false",
-    SAVE_STATUS : toBool(process.env.SAVE_STATUS || "false"),
-    ADMIN_SUDO_ACCESS: toBool(process.env.ADMIN_SUDO_ACCESS || "false"),
+    STATUS : process.env.STATUS || "false",//view, save, all
     DISABLE_PM: toBool(process.env.DISABLE_PM || "false"),
     DISABLE_GRP : toBool(process.env.DISABLE_GRP || "false"),
     ERROR_MSG : toBool(process.env.ERROR_MSG || "true"),
@@ -34,11 +30,12 @@ module.exports = {
     BOT_INFO : process.env.BOT_INFO || "INRL-BOT-MD;INRL;https://i.imgur.com/DyLAuEh.jpg",
     WORKTYPE : process.env.WORKTYPE || "private",
     PREFIX : process.env.PREFIX || "[.,!]",//both  .  and [.] equal, for multi prefix we use [] this
-    LANG : process.env.LANG || "en",
     PERSONAL_MESSAGE: process.env.PERSONAL_MESSAGE || "null",
     BOT_PRESENCE : process.env.BOT_PRESENCE || "unavailable",
     AUDIO_DATA : process.env.AUDIO_DATA || "INRL-BOT-MD;INRL;https://i.imgur.com/DyLAuEh.jpg",
     STICKER_DATA : process.env.STICKER_DATA || "inrl;inrl",
+    LIST_TYPE: process.env.LIST_TYPE || 'poll',//list, react
+    API_TYPE: process.env.API_TYPE || 'all',//unique
     BRAINSHOP: process.env.BRAINSHOP || '172372,nbjE0YAlyw3cpoMl',
     SUDO : process.env.SUDO || "null",
     RMBG_KEY: process.env.RMBG_KEY,
