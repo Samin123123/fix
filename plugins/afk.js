@@ -60,7 +60,8 @@ inrl({
 inrl({
 	pattern: 'afk ?(.*)',
 	fromMe: true,
-	desc: 'away from keyboard'
+	desc: 'away from keyboard',
+	type: 'owner'
 }, async (message, match) => {
 	if (!AFK.isAfk) {
 		AFK.lastseen = Math.round((new Date()).getTime() / 1000);
