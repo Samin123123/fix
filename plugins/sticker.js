@@ -1,7 +1,6 @@
 const {
   inrl,
   mode,
-  lang,
   config
 } = require('../lib');
 const fs = require("fs");
@@ -11,14 +10,14 @@ inrl(
   {
     pattern: "sticker",
     fromMe: mode,
-    desc: lang.STICKER.DESC,
+    desc: 'make stickers',
     react: "🔁",
     type : 'converter',
     usage : "to convert short video or image to sticker fromate, ex:- sticker[repleyed_msg]"
   },
   async (message, match) => {
     if (!/image|video|webp/.test(message.mime)) return await message.send(
-      lang.STICKER.ERROR
+      '> please reply to a sticker message'
         );
      if (message.reply_message.mime) {
         let download = await message.reply_message.download();
@@ -34,7 +33,7 @@ inrl(
         });
       } else {
         return await message.send(
-          lang.STICKER.ERROR
+          '> invalid meda as you replied'
         );
       }
   }
