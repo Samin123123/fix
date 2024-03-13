@@ -11,7 +11,8 @@ inrl({
         pattern: 'mention ?(.*)',
         on: 'all',
         allowBot: true,
-        fromMe: false
+        fromMe: false,
+        type: 'user'
 }, async (message, match) => {
         if (message.command && message.isCreator && !message.isBot && message.command.includes('mention') && match.toLowerCase() == 'get') {
                 const {mention} = await personalDB(['mention'], {content: {}}, 'get');
