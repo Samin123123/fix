@@ -34,7 +34,8 @@ module.exports = {
     BOT_PRESENCE : process.env.BOT_PRESENCE || "unavailable",
     AUDIO_DATA : process.env.AUDIO_DATA || "INRL-BOT-MD;INRL;https://i.imgur.com/DyLAuEh.jpg",
     STICKER_DATA : process.env.STICKER_DATA || "inrl;inrl",
-    LIST_TYPE: process.env.LIST_TYPE || 'poll',//list, react
+    LIST_TYPE: process.env.LIST_TYPE || 'poll',//list, reaction 
+    LINK_PREVIEW: 'INRL;als;https://graph.org/file/1ec147e94d9775916e665.jpg',//you can use "false" alslo
     API_TYPE: process.env.API_TYPE || 'all',//unique
     BRAINSHOP: process.env.BRAINSHOP || '172372,nbjE0YAlyw3cpoMl',
     SUDO : process.env.SUDO || "null",
