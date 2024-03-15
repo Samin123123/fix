@@ -16,9 +16,10 @@ module.exports = {
     BGM_URL : process.env.BGM_URL || "null",
     ANTI_CALL : process.env.ANTI_CALL || 'false',//true,block
     ALLWAYS_ONLINE: toBool(process.env.ALLWAYS_ONLINE || "false"),
-    PM_BLOCK : process.env.PM_BLOCK || "false",//badword, all, spam
+    PM_BLOCK : process.env.PM_BLOCK || "false",//badword, all, spam:10 for spamming 10 block
     BGMBOT : toBool(process.env.BGMBOT || "false"),
-    STATUS : process.env.STATUS || "false",//view, save, all, save-expected,"save,view-expected","save,view-non-expected", save-non-expected,expected,non-expected
+    STATUS_VIEW: process.env.STATUS_VIEW || "false",
+    SAVE_STATUS: process.env.SAVE_STATUS || "false",
     DISABLE_PM: toBool(process.env.DISABLE_PM || "false"),
     DISABLE_GRP : toBool(process.env.DISABLE_GRP || "false"),
     ERROR_MSG : toBool(process.env.ERROR_MSG || "true"),
