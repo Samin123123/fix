@@ -1,13 +1,12 @@
 const {
        inrl,
-       lang,
        mode
 } = require('../lib');
 
 
 inrl({
     pattern: 'ping ?(.*)',
-    desc: lang.PING_DESC,
+    desc: 'check bot speed',
     react: "💯",
     fromMe: mode,
     type: 'info'
