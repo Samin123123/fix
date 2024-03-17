@@ -3,14 +3,13 @@ const {
     commands,
     send_alive,
     send_menu,
-    lang,
     personalDB,
     mode
 } = require('../lib')
 
 inrl({
 	pattern: 'list',
-	desc: lang.LIST.DESC,
+	desc: 'list all command with description',
 	react: "💯",
 	type: 'info',
 	fromMe: mode
@@ -28,21 +27,20 @@ inrl({
 });
 
 inrl({
-    pattern: "menu",
-    desc: lang.MENU.DESC,
+    pattern: 'menu',
+    desc: 'list all commands',
     react: "📰",
     type: 'whatsapp',
     fromMe: mode
 }, async (message, match) => {
-    return await send_menu(message, 'non button');
+    return await send_menu(message);
 });
 
 inrl({
-    pattern: "alive",
-    desc: lang.ALIVE.DESC,
+    pattern: 'alive',
+    desc: 'show bot online',
     react: "🥰",
     type: 'info',
-    usage:lang.ALIVE.HELP,
     fromMe: mode
 }, async (message, match) => {
     if(match == "get" && message.isCreator){
