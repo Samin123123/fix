@@ -1,10 +1,9 @@
 const {
     inrl,
-    runtime,
     personalDB,
     extractUrlsFromString,
-    lang,
-    config
+    config,
+    linkPreview
 } = require('../lib');
 
 const {
@@ -15,17 +14,17 @@ const fs = require("fs");
 
 inrl({
     pattern: 'restart ?(.*)',
-    desc: lang.RESTART.DESC,
+    desc: 'restart bot',
     react: "🥱",
     type: "system",
     fromMe: true
 }, async (message, match) => {
-    await message.reply(lang.RESTART.INFO)
-    exec('pm2 restart all')
+    await message.send('```restarting```',{linkPreview: linkPreview()})
+    process.exit(0);
 })
 inrl({
     pattern: 'plugin ?(.*)',
-    desc: lang.EXTERNAL_PLUGIN.DESC,
+    desc: 'install external plugins',
     react: "🦥",
     type: "system",
     fromMe: true
@@ -34,9 +33,9 @@ inrl({
     let text = "",
         name, urls;
     if (match && extractUrlsFromString(match)) {
-        await message.reply(lang.BASE.WAIT)
+        await message.send('```please wait```', {linkPreview: linkPreview()})
         const urll = extractUrlsFromString(match);
-        if (!urll[0]) return message.send(lang.BASE.NEED_URL)
+        if (!urll[0]) return  message.send('```invalid url```', {linkPreview: linkPreview()})
         urll.map(async (url) => {
             let NewUrl = !url?.toString().includes('/raw') ? url.toString() : url.toString().split('/raw')[0];
             let plugin_name;
@@ -44,7 +43,7 @@ inrl({
                 data,
                 status
             } = await axios(NewUrl + '/raw').catch((e) => {
-                return message.reply(lang.BASE.INVALID_URL)
+                return message.send('```url must be a valid url or gist url```', {linkPreview: linkPreview()})
             })
             if (status == 200) {
                 try {
@@ -53,9 +52,9 @@ inrl({
                     require("./" + plugin_name.split(',')[0]);
                 } catch (e) {
                     fs.unlinkSync(__dirname + "/" + plugin_name.split(',')[0] + ".js");
-                    return await message.reply(e);
+                    return await message.send(e);
                 }
-                await message.reply(lang.EXTERNAL_PLUGIN.INSTALLED.format(plugin_name));
+                await message.send(`_newly installed plugins are *${plugin_name}*_`,{ linkPreview: linkPreview()})
                 await personalDB(['plugins'], {
                     content: {
                         [plugin_name.split(',')[0]]: NewUrl
@@ -70,28 +69,28 @@ inrl({
         } = await personalDB(['plugins'], {
             content: {}
         }, 'get');
-        if (!Object.keys(plugins)[0]) return await message.reply(lang.EXTERNAL_PLUGIN.NO_PLUGIN)
-        let text = lang.EXTERNAL_PLUGIN.LIST
+        if (!Object.keys(plugins)[0]) return await message.send('```no plugins found```, {linkPreview:linkPreview()})
+        let text = '*LIST OF EXTERNAL PLUGINS*'
         for (const p in plugins) {
             text += `_*${p}*_\n_${plugins[p]}_\n\n`;
         };
-        return await message.reply(text)
+        return await message.send(text,{linkPreview:linkPreview()}))
     }
 })
 inrl({
     pattern: 'remove ?(.*)',
-    desc: lang.EXTERNAL_PLUGIN.REMOVE_DESC,
+    desc: 'remove installed external plugin',
     react: "😶",
     type: "system",
     fromMe: true
 }, async (message, match) => {
-    if (!match) return await message.send("*Give me a plugin name thet you want to remove*");
+    if (!match) return await message.send("*Give me a plugin name thet you want to remove*",{linkPreview:linkPreview()}));
     const {
         plugins
     } = await personalDB(['plugins'], {
         content: {}
     }, 'get');
-    if (!Object.keys(plugins)[0]) return await message.reply(lang.EXTERNAL_PLUGIN.NO_PLUGIN)
+    if (!Object.keys(plugins)[0]) return await message.send('```no plugins found```, {linkPreview:linkPreview()})
     let Available = false;
     for (const p in plugins) {
         if (p == match) {
@@ -101,9 +100,9 @@ inrl({
                     id: match
                 }
             }, 'delete');
-            await message.send(lang.EXTERNAL_PLUGIN.REMOVED);
+            await message.send('_plugin successfully removed_',{linkPreview:linkPreview()});
             break;
         }
     }
-    if (!Available) return await message.reply(lang.EXTERNAL_PLUGIN.NO_PLUGIN);
+    if (!Available) return await message.send('```no plugins found```, {linkPreview:linkPreview()})
 });
