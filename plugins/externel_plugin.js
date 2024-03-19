@@ -74,7 +74,7 @@ inrl({
         for (const p in plugins) {
             text += `_*${p}*_\n_${plugins[p]}_\n\n`;
         };
-        return await message.send(text,{linkPreview:linkPreview()}))
+        return await message.send(text,{linkPreview:linkPreview()})
     }
 })
 inrl({
@@ -84,7 +84,7 @@ inrl({
     type: "system",
     fromMe: true
 }, async (message, match) => {
-    if (!match) return await message.send("*Give me a plugin name thet you want to remove*",{linkPreview:linkPreview()}));
+    if (!match) return await message.send("*Give me a plugin name thet you want to remove*",{linkPreview:linkPreview()});
     const {
         plugins
     } = await personalDB(['plugins'], {
