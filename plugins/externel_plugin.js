@@ -69,7 +69,7 @@ inrl({
         } = await personalDB(['plugins'], {
             content: {}
         }, 'get');
-        if (!Object.keys(plugins)[0]) return await message.send('```no plugins found```, {linkPreview:linkPreview()})
+        if (!Object.keys(plugins)[0]) return await message.send('```no plugins found```', {linkPreview:linkPreview()})
         let text = '*LIST OF EXTERNAL PLUGINS*'
         for (const p in plugins) {
             text += `_*${p}*_\n_${plugins[p]}_\n\n`;
@@ -90,7 +90,7 @@ inrl({
     } = await personalDB(['plugins'], {
         content: {}
     }, 'get');
-    if (!Object.keys(plugins)[0]) return await message.send('```no plugins found```, {linkPreview:linkPreview()})
+    if (!Object.keys(plugins)[0]) return await message.send('```no plugins found```', {linkPreview:linkPreview()})
     let Available = false;
     for (const p in plugins) {
         if (p == match) {
@@ -104,5 +104,5 @@ inrl({
             break;
         }
     }
-    if (!Available) return await message.send('```no plugins found```, {linkPreview:linkPreview()})
+    if (!Available) return await message.send('```no plugins found```', {linkPreview:linkPreview()})
 });
