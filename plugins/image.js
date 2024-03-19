@@ -1,8 +1,8 @@
 const {
     inrl,
-    lang,
     mode,
     badWordDetect,
+    linkPreview,
     getJson,
     config
 } = require('../lib');
@@ -15,16 +15,14 @@ inrl({
     react: "🖼",
     fromMe: mode,
     type: "search",
-    desc : lang.IMG.IMG_DESC
+    desc : 'download image'
 }, async (message, match) => {
-    if (!match) {
-        return await message.send(lang.BASE.TEXT)
-    }
-    if(badWordDetect(match.toLowerCase()) && !message.isCreator) return await message.send(lang.BASE.NOT_AUTHR)
+    if (!match) return await message.send('_please give me a text_',{linkPreview: linkPreview()})
+    if(badWordDetect(match.toLowerCase()) && !message.isCreator) return await message.send('_invalid attempt_',{linkPreview: linkPreview()})
     let [text,number] = match.split(/[;,|]/)
     if(!text) text = match;
     if(!number) number = 1;
-    if(number>3 && !message.isCreator) return await message.reply(lang.BASE.NOT_AUTHR);
+    if(number>3 && !message.isCreator) return await message.send('_invalid attempt_',{linkPreview: linkPreview()})
     const data = await getJson(config.BASE_URL+'api/search/gis?text='+text+`&count=${number}&apikey=${config.INRL_KEY}`);
     const {result} = data;
     if(!data.status) return await message.send(`API key limit exceeded. Get a new API key at ${config.BASE_URL}api/signup. Set var inrl_key: your_api_key`);
