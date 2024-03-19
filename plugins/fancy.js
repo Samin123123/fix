@@ -1,6 +1,5 @@
 const {
 	inrl,
-	lang,
 	mode,
 	config,
 	getJson
@@ -11,7 +10,7 @@ inrl({
 	pattern: 'fancy ?(.*)',
 	type: 'utility',
 	fromMe: mode,
-	desc: lang.FANCY.DESC
+	desc: 'generate fancy text'
 }, async (message, match) => {
 	if (!match && !message.reply_message.text) {
 		const res = await getJson(`${config.BASE_URL}api/tools/fancy?text=fancy 10 inrl&apikey=${config.INRL_KEY}&key=list`);
