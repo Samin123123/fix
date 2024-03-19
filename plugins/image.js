@@ -11,7 +11,6 @@ const fs = require('fs');
 
 inrl({
     pattern: "img",
-    usage: 'send google image result for give text',
     react: "🖼",
     fromMe: mode,
     type: "search",
