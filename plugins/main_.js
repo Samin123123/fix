@@ -5,7 +5,6 @@ const {
     sendUrl,
     mode,
     AudioMetaData,
-    lang,
     toAudio,
     config
 } = require('../lib');
@@ -13,18 +12,18 @@ const fs = require('fs');
 
 inrl({
     pattern: 'url',
-    desc: lang.GENERAL.URL_DESC,
+    desc: 'convert image url',
     react: "⛰️",
     fromMe: mode,
     type: "converter"
 }, async (message, match) => {
-    if (!message.isMedia) return message.reply(lang.BASE.NEED.format('image/sticker/video/audio'));
+    if (!message.isMedia) return message.reply('_please reply to image/sticker/video/audio_');
     return await sendUrl(message, message.client);
 });
 
 inrl({
     pattern: 'take',
-    desc: lang.GENERAL.TAKE_DESC,
+    desc: 'change sticker and audio authority',
     react: "⚒️",
     fromMe: mode,
     type: "utility"
@@ -51,13 +50,13 @@ inrl({
     })
 inrl({
     pattern: 'emix',
-    desc: lang.GENERAL.EMIX_DESC,
+    desc: 'mix two emojis to a sticker',
     react: "🤌",
     fromMe: mode,
     type: "create"
 }, async (message, match) => {
-    if (!match) return message.send(lang.GENERAL.NEED_EMOJI.format("emix"));
-    if (!match.includes(/[|,;]/)) return message.send(lang.GENERAL.NEED_EMOJI.format("emix"));
+    if (!match) return message.send('*Example:-* .emix 😵‍💫+😅');
+    if (!match.includes(/[|,;]/)) return message.send('*Example:-* .emix 😵‍💫+😅');
     let emoji1, emoji2;
     if (match.includes(/[|,;]/)) {
         let split = match.split(/[|,;]/);
