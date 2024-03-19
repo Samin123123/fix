@@ -1,7 +1,6 @@
 const {
 	inrl,
 	extractUrlsFromString,
-	lang,
 	mode,
 	getJson,
 	config,
@@ -12,7 +11,7 @@ const {
 
 inrl({
 	pattern: 'insta ?(.*)',
-	desc: lang.INSTA.DESC,
+	desc: 'download Instagram medias',
 	react: "😛",
 	fromMe: mode,
 	type: "downloader",
@@ -22,10 +21,10 @@ inrl({
 		return await message.sendFromUrl(match);
 	}
 	match = match || message.reply_message.text;
-	if (!match) return await message.send(lang.INSTA.NEED_URL);
+	if (!match) return await message.send('_need instagram url_');
 	const urls = extractUrlsFromString(match);
-	if (!urls[0]) return await message.send(lang.INSTA.NOT_VALID);
-	if (!isInstagramURL(urls[0])) return await message.send(lang.INSTA.NEED_URL);
+	if (!urls[0]) return await message.send('_No url found!_');
+	if (!isInstagramURL(urls[0])) return await message.send('_Something went wrong, Please try again!_');
 	let data = await getJson(`${config.BASE_URL}api/download/insta?apikey=${config.INRL_KEY}&url=${urls[0]}`);
 	if (!data.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
 	const {
@@ -33,7 +32,7 @@ inrl({
 	} = data;
 	let options = [],
 		n = 1;
-	if (!result[0]) return await message.send(lang.BASE.ERROR.format("Not Found"));
+	if (!result[0]) return await message.send('_No matching results found!_');
 	result.map(async (u) => {
 		options.push({
 			name: `${n++}/${result.length}`,
@@ -53,7 +52,7 @@ inrl({
 
 inrl({
 	pattern: 'story ?(.*)',
-	desc: lang.INSTA.DESC,
+	desc: 'download instagram story',
 	react: "😛",
 	fromMe: mode,
 	type: "downloader",
@@ -63,10 +62,10 @@ inrl({
 		return await message.sendFromUrl(match);
 	}
 	match = match || message.reply_message.text;
-	if (!match) return await message.send(lang.INSTA.NEED_URL);
+	if (!match) return await message.send('_need instagram url_');
 	const urls = extractUrlsFromString(match);
-	if (!urls[0]) return await message.send(lang.INSTA.NOT_VALID);
-	if (!isInstagramURL(urls[0])) return await message.send(lang.INSTA.NEED_URL);
+	if (!urls[0]) return await message.send('_Something went wrong, Please try again!_');
+	if (!isInstagramURL(urls[0])) return await message.send('_No matching results found!_');
 	let data = await getJson(`${config.BASE_URL}api/download/insta?apikey=${config.INRL_KEY}&url=${urls[0]}`);
 	if (!data.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
 	const {
@@ -74,7 +73,7 @@ inrl({
 	} = data;
 	let options = [],
 		n = 1;
-	if (!result[0]) return await message.send(lang.BASE.ERROR.format("Not Found"));
+	if (!result[0]) return await message.send('_No matching results found!_');
 	result.map(async (u) => {
 		options.push({
 			name: `${n++}/${result.length}`,
