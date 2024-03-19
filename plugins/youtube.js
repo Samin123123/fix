@@ -54,7 +54,7 @@ inrl({
 		const result = await searchYT(match);
 		if (!result[0]) return await message.send('_not found_');
 		return await message.send({
-			name: 'YOUTUBE VIDEO DOWNLOADER',,
+			name: 'YOUTUBE VIDEO DOWNLOADER',
 			values: result.splice(0,10).map(a=>({name:a.title, id: `video ${a.url}`})),
 			withPrefix: true,
 			onlyOnce: false,
