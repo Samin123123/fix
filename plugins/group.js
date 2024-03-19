@@ -342,7 +342,7 @@ inrl({
 	}
 });
 
-System({
+inrl({
 	pattern: 'ginfo ?(.*)',
 	fromMe: true,
 	desc: 'Shows group invite info',
