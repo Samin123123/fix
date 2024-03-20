@@ -12,13 +12,14 @@ const heroku = new Heroku({
 const {
 	inrl,
 	GenListMessage,
-	lang
+	linkPreview
 } = require('../lib');
 
 inrl({
 	pattern: 'update$',
 	fromMe: true,
-	desc: lang.HEROKU.DESC
+	desc: 'update the bot',
+	type: 'owner'
 }, async (message) => {
 	if (!message.text) {
 		return await message.send({
@@ -39,7 +40,7 @@ inrl({
 	await git.fetch();
 	let commits = await git.log(['master' + '..origin/' + 'master']);
 	if (commits.total === 0) {
-		return await message.send(lang.HEROKU.ALLREDY)
+		return await message.send('_already up-to-date_', {linkPreview: linkPreview()})
 	} else {
 		await message.send("_*updating...*_");
 		let al
@@ -48,7 +49,7 @@ inrl({
 		} catch {
 			await git.reset("hard", ["HEAD"])
 			await git.pull()
-			await message.send("_Successfully updated. Please manually update npm modules if applicable!_")
+			await message.send("_Successfully updated. Please manually update npm modules if applicable!_", {linkPreview: linkPreview()})
 			process.exit(0);
 		}
 		git.fetch('upstream', 'master');
@@ -67,12 +68,12 @@ inrl({
 	await git.fetch();
 	let commits = await git.log(['master' + '..origin/' + 'master']);
 	if (commits.total === 0) {
-		return await message.send(lang.HEROKU.ALLREDY)
+		return await message.send('_already up-to-date_', {linkPreview: linkPreview()})
 	} else {
-		let inrlupdate = lang.HEROKU.LIST_UPDATE;
+		let inrlupdate = '*LIST OF NEW UPDATES*';
 		commits['all'].map(
 			(commit) => {
-				inrlupdate += "```" + lang.HEROKU.COMMITS.format(commit.date.substring(0, 10), commit.message, commit.author_name) + "```\n\n";
+				inrlupdate += "```commit: " + commit.date.substring(0, 10)+'```\n```message: ' +commit.message+'```\n```author: ' +commit.author_name + "```\n\n";
 			});
 		return await message.send(inrlupdate);
 	}
