@@ -1,6 +1,4 @@
 FROM node:latest
-ENV TZ=Asia/Kolkata
-WORKDIR /root/inrl/
 COPY package*.json ./
 RUN npm install
 RUN apt-get update && \
@@ -11,4 +9,5 @@ RUN apt-get update && \
   apt-get upgrade -y && \
   rm -rf /var/lib/apt/lists/*
 COPY . .
+WORKDIR /test
 CMD ["node", "index.js"]
