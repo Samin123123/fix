@@ -1,4 +1,8 @@
-FROM node:lts-buster
+FROM node:latest
+ENV TZ=Asia/Kolkata
+WORKDIR /root/inrl/
+COPY package*.json ./
+RUN npm install
 RUN apt-get update && \
   apt-get install -y \
   ffmpeg \
@@ -6,7 +10,5 @@ RUN apt-get update && \
   webp && \
   apt-get upgrade -y && \
   rm -rf /var/lib/apt/lists/*
-RUN git clone https://github.com/inrl-md/fix /beta
-WORKDIR /beta
-RUN npm install
+COPY . .
 CMD ["node", "index.js"]
