@@ -1,12 +1,12 @@
 const {
-    inrl,
+    plugin,
     personalDB
 } = require('../lib')
 const {
     exec
 } = require("child_process");
 
-inrl({
+plugin({
     pattern: 'ban ?(.*)',
     desc: 'deactivate bot in specified jid',
     type: 'owner',
@@ -26,7 +26,7 @@ inrl({
     return exec('pm2 restart all')
 });
 
-inrl({
+plugin({
     pattern: 'unban ?(.*)',
     desc: 'activate bot in deactivated bot jid',
     type: 'owner',
