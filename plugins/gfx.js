@@ -1,5 +1,5 @@
 const {
-	inrl,
+	plugin,
 	config
 } = require('../lib');
 const axios = require('axios');
@@ -9,7 +9,7 @@ const res = await axios.post(`${config.BASE_URL}api/gfx/${id}`, options);
 return Buffer.from(res.data.result)
 }
 
-inrl({
+plugin({
 	pattern: 'gfx1 ?(.*)',
 	desc: "generate gfx logo",
 	type: 'gfx',
@@ -25,7 +25,7 @@ inrl({
 	const res = await postJson('gfx1', options);
 	return await message.send(res, {quoted: message.data},'image');
 });
-inrl({
+plugin({
 	pattern: 'gfx2 ?(.*)',
 	desc: "generate gfx logo",
 	type: 'gfx',
@@ -40,7 +40,7 @@ inrl({
 	const res = await postJson('gfx2', options);
 	return await message.send(res, {quoted: message.data},'image');
 });
-inrl({
+plugin({
 	pattern: 'gfx3 ?(.*)',
 	desc: "generate gfx logo",
 	type: 'gfx',
@@ -55,7 +55,7 @@ inrl({
 	const res = await postJson('gfx3', options);
 	return await message.send(res, {quoted: message.data},'image');
 });
-inrl({
+plugin({
 	pattern: 'gfx4 ?(.*)',
 	desc: "generate gfx logo",
 	type: 'gfx',
@@ -70,7 +70,7 @@ inrl({
 	const res = await postJson('gfx4', options);
 	return await message.send(res, {quoted: message.data},'image');
 });
-inrl({
+plugin({
 	pattern: 'gfx5 ?(.*)',
 	desc: "generate gfx logo",
 	type: 'gfx',
@@ -85,7 +85,7 @@ inrl({
 	const res = await postJson('gfx5', options);
 	return await message.send(res, {quoted: message.data},'image');
 });
-inrl({
+plugin({
 	pattern: 'gfx6 ?(.*)',
 	desc: "generate gfx logo",
 	type: 'gfx',
@@ -100,7 +100,7 @@ inrl({
 	const res = await postJson('gfx6', options);
 	return await message.send(res, {quoted: message.data},'image');
 });
-inrl({
+plugin({
 	pattern: 'gfx7 ?(.*)',
 	desc: "generate gfx logo",
 	type: 'gfx',
@@ -115,7 +115,7 @@ inrl({
 	const res = await postJson('gfx7', options);
 	return await message.send(res, {quoted: message.data},'image');
 });
-inrl({
+plugin({
 	pattern: 'gfx8 ?(.*)',
 	desc: "generate gfx logo",
 	type: 'gfx',
@@ -130,7 +130,7 @@ inrl({
 	const res = await postJson('gfx8', options);
 	return await message.send(res, {quoted: message.data},'image');
 });
-inrl({
+plugin({
 	pattern: 'gfx9 ?(.*)',
 	desc: "generate gfx logo",
 	type: 'gfx',
@@ -145,7 +145,7 @@ inrl({
 	const res = await postJson('gfx9', options);
 	return await message.send(res, {quoted: message.data},'image');
 });
-inrl({
+plugin({
 	pattern: 'gfx10 ?(.*)',
 	desc: "generate gfx logo",
 	type: 'gfx',
@@ -160,7 +160,7 @@ inrl({
 	const res = await postJson('gfx10', options);
 	return await message.send(res, {quoted: message.data},'image');
 });
-inrl({
+plugin({
 	pattern: 'gfx11 ?(.*)',
 	desc: "generate gfx logo",
 	type: 'gfx',
@@ -175,7 +175,7 @@ inrl({
 	const res = await postJson('gfx11', options);
 	return await message.send(res, {quoted: message.data},'image');
 });
-inrl({
+plugin({
 	pattern: 'gfx12 ?(.*)',
 	desc: "generate gfx logo",
 	type: 'gfx',
