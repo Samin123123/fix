@@ -1,12 +1,12 @@
 const {
-        inrl,
+        plugin,
         getJson,
         config,
         mode
 } = require('../lib');
 
 
-inrl({
+plugin({
         on: 'text',
         fromMe: mode
 }, async (m, match) => {
