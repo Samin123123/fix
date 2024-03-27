@@ -1,5 +1,5 @@
 const {
-	inrl,
+	plugin,
 	mode,
 	config,
 	getBuffer,
@@ -8,7 +8,7 @@ const {
 } = require('../lib');
 
 
-inrl({
+plugin({
 	pattern: 'aitts ?(.*)',
 	type: "eva",
 	fromMe: mode,
@@ -66,7 +66,7 @@ inrl({
 	}, 'audio')
 })
 
-inrl({
+plugin({
     pattern: 'gpt ?(.*)',
     desc: 'get open ai chatgpt response',
     type: "eva",
@@ -80,13 +80,13 @@ inrl({
         if (!match) return await message.reply('_please can you provide me a task_');
         if(!config.OPEN_AI) {
             const res = await getJson(`${config.BASE_URL}api/ai/chatgpt?text=${match}&apikey=${config.INRL_KEY}`);
-            if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+            if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
             return await message.send(res.result);
         } 
         return await message.send(await GPT.prompt(match));
 });
 
-inrl({
+plugin({
 	pattern: 'diffusion ?(.*)',
 	type: "eva",
 	desc: "stable diffusion ai",
@@ -98,7 +98,7 @@ inrl({
 	return await message.send(res, {},'image');
 });
 
-inrl({
+plugin({
 	pattern: 'gemini ?(.*)',
 	type: "eva",
 	fromMe: mode,
@@ -107,11 +107,11 @@ inrl({
 	match = match || message.reply_message.text;
 	if (!match) return await message.send("*please give me an query!*");
 	const res = await getJson(`${config.BASE_URL}api/ai/gemini?text=${match}&apikey=${config.INRL_KEY}`);
-	if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+	if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
 	return await message.send(res.result);
 });
 
-inrl({
+plugin({
 	pattern: 'bard ?(.*)',
 	type: "eva",
 	fromMe: mode,
@@ -120,11 +120,11 @@ inrl({
 	match = match || message.reply_message.text;
 	if (!match) return await message.send("*please give me an query!*");
 	const res = await getJson(`${config.BASE_URL}api/ai/bard?text=${match}&apikey=${config.INRL_KEY}`);
-	if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+	if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
 	return await message.send(res.result);
 });
 
-inrl({
+plugin({
 	pattern: 'bing ?(.*)',
 	type: "eva",
 	fromMe: mode,
