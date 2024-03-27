@@ -1,5 +1,5 @@
 const {
-    inrl,
+    plugin,
     mode,
     toAudio,
     toPTT,
@@ -12,7 +12,7 @@ const {
 const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 
-inrl({
+plugin({
     pattern: 'photo ?(.*)',
     desc: 'convert sticker to image',
     type: "converter",
@@ -31,7 +31,7 @@ inrl({
                 return await message.send(fs.readFileSync('output.png'), {},'image');
             });
 });
-inrl({
+plugin({
     pattern: 'voice ?(.*)',
     desc: 'audio to ptt converter',
     type: "converter",
@@ -44,7 +44,7 @@ inrl({
         ptt: true
     }, 'audio')
 });
-inrl({
+plugin({
     pattern: 'gif ?(.*)',
     desc: 'vedio to gif converter',
     type: "converter",
@@ -54,7 +54,7 @@ inrl({
     await webp2mp4File(await message.client.downloadAndSaveMediaMessage(message.reply_message.sticker || message.reply_message.video))
     return await message.send({ url : webpToMp4.result }, {gifPlayback: true, quoted: message.data }, 'video'); 
 });
-inrl({
+plugin({
     pattern: 'bass ?(.*)',
     desc: 'audio edit',
     type: "audio-edit",
@@ -75,7 +75,7 @@ inrl({
             })
         });
 });
-inrl({
+plugin({
     pattern: 'slow ?(.*)',
     desc: 'audio edit',
     type: "audio-edit",
@@ -97,7 +97,7 @@ inrl({
             })
       });
 });
-inrl({
+plugin({
     pattern: 'blown ?(.*)',
     desc: 'audio edit',
     type: "audio-edit",
@@ -118,7 +118,7 @@ inrl({
             })
         });
 });
-inrl({
+plugin({
     pattern: 'deep ?(.*)',
     desc: 'audio edit',
     type: "audio-edit",
@@ -139,7 +139,7 @@ inrl({
             })
       });      
 });
-inrl({
+plugin({
     pattern: 'earrape ?(.*)',
     desc: 'audio edit',
     type: "audio-edit",
@@ -160,7 +160,7 @@ inrl({
             })
         });	
 });
-inrl({
+plugin({
     pattern: 'fast ?(.*)',
     desc: 'audio edit',
     type: "audio-edit",
@@ -181,7 +181,7 @@ inrl({
             })
      });
 });
-inrl({
+plugin({
     pattern: 'fat ?(.*)',
     desc: 'audio edit',
     type: "audio-edit",
@@ -202,7 +202,7 @@ inrl({
             })
         });
 });
-inrl({
+plugin({
     pattern: 'nightcore ?(.*)',
     desc: 'audio edit',
     type: "audio-edit",
@@ -223,7 +223,7 @@ inrl({
             })
         });  
 });
-inrl({
+plugin({
     pattern: 'reverse ?(.*)',
     desc: 'audio edit',
     type: "audio-edit",
@@ -244,7 +244,7 @@ inrl({
             })
         });  
 });
-inrl({
+plugin({
     pattern: 'squirrel ?(.*)',
     desc: 'audio edit',
     type: "audio-edit",
@@ -266,7 +266,7 @@ inrl({
         });
 });
 
-inrl({
+plugin({
     pattern: 'mp3 ?(.*)',
     desc: 'video to mp3 converter',
     type: "converter",
