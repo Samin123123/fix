@@ -2,7 +2,6 @@ const {
 	plugin,
 	config,
 	getJson,
-	lang,
 	mode
 } = require('../lib');
 
@@ -16,7 +15,7 @@ plugin({
 	match = match || message.reply_message.text;
 	if (!match) return await message.send("*please give me an application name*");
 	if (match.startsWith('dl-id:')) {
-		match = match.replace(/dl-id:/, '').replace(lang.YT.INFO_VIDEO,'').trim();
+		match = match.replace(/dl-id:/, '').replace('APK DOWNLOADER','').trim();
 		const res = await getJson(`${config.BASE_URL}api/download/apk?url=${match}&apikey=${config.INRL_KEY}`);
 		if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar plugin_key: your apikey`);
 		return await message.send({
@@ -33,7 +32,7 @@ plugin({
 		id: `apk dl-id:${a.id}`
 	}));
 	return await message.send({
-		name: lang.YT.INFO_VIDEO,
+		name: 'APK DOWNLOADER',
 		values: list,
 		withPrefix: true,
 		onlyOnce: true,
