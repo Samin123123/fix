@@ -1,5 +1,5 @@
 const {
-    inrl,
+    plugin,
     commands,
     send_alive,
     send_menu,
@@ -7,7 +7,7 @@ const {
     mode
 } = require('../lib')
 
-inrl({
+plugin({
 	pattern: 'list',
 	desc: 'list all command with description',
 	react: "💯",
@@ -26,7 +26,7 @@ inrl({
 	return await message.send(list);
 });
 
-inrl({
+plugin({
     pattern: 'menu',
     desc: 'list all commands',
     react: "📰",
@@ -36,7 +36,7 @@ inrl({
     return await send_menu(message);
 });
 
-inrl({
+plugin({
     pattern: 'alive',
     desc: 'show bot online',
     react: "🥰",
