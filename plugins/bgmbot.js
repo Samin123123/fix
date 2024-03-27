@@ -1,7 +1,7 @@
 const bgm = require('../media/bgm.json');
-const { inrl, config, mode } = require('../lib');
+const { plugin, config, mode } = require('../lib');
 
-inrl({
+plugin({
         on: 'text',
         fromMe: mode
 }, async (m, match) => {
