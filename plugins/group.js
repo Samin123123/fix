@@ -1,5 +1,5 @@
 const {
-	inrl,
+	plugin,
 	isAdmin,
 	isBotAdmin,
 	linkPreview,
@@ -7,7 +7,7 @@ const {
 } = require('../lib');
 
 
-inrl({
+plugin({
 	pattern: 'promote ?(.*)',
 	type: 'group',
 	fromMe: true,
@@ -27,7 +27,7 @@ inrl({
 		linkPreview: linkPreview()
 	})
 });
-inrl({
+plugin({
 	pattern: 'kick ?(.*)',
 	type: 'group',
 	fromMe: true,
@@ -68,7 +68,7 @@ inrl({
 	}
 });
 
-inrl({
+plugin({
 	pattern: 'demote ?(.*)',
 	type: 'group',
 	fromMe: true,
@@ -91,7 +91,7 @@ inrl({
 });
 
 
-inrl({
+plugin({
 	pattern: 'revoke ?(.*)',
 	type: 'group',
 	fromMe: true,
@@ -107,7 +107,7 @@ inrl({
 	})
 });
 
-inrl({
+plugin({
 	pattern: 'invite ?(.*)',
 	type: 'group',
 	onlyGroup: true,
@@ -123,7 +123,7 @@ inrl({
 	})
 });
 
-inrl({
+plugin({
 	pattern: 'lock ?(.*)',
 	type: 'group',
 	fromMe: true,
@@ -139,7 +139,7 @@ inrl({
 	})
 });
 
-inrl({
+plugin({
 	pattern: 'mute ?(.*)',
 	type: 'group',
 	fromMe: true,
@@ -155,7 +155,7 @@ inrl({
 	})
 });
 
-inrl({
+plugin({
 	pattern: 'unmute ?(.*)',
 	type: 'group',
 	fromMe: true,
@@ -171,7 +171,7 @@ inrl({
 	})
 });
 
-inrl({
+plugin({
 	pattern: 'gdesc ?(.*)',
 	type: 'group',
 	fromMe: true,
@@ -191,7 +191,7 @@ inrl({
 	})
 });
 
-inrl({
+plugin({
 	pattern: 'unlock ?(.*)',
 	type: 'group',
 	fromMe: true,
@@ -207,7 +207,7 @@ inrl({
 	})
 });
 
-inrl({
+plugin({
 	pattern: 'left ?(.*)',
 	type: 'group',
 	onlyGroup: true,
@@ -217,7 +217,7 @@ inrl({
 	await message.client.groupLeave(message.jid)
 });
 
-inrl({
+plugin({
 	pattern: 'gname ?(.*)',
 	type: 'group',
 	fromMe: true,
@@ -237,7 +237,7 @@ inrl({
 	})
 });
 
-inrl({
+plugin({
 	pattern: 'gpp ?(.*)',
 	type: 'group',
 	fromMe: true,
@@ -255,7 +255,7 @@ inrl({
 	})
 })
 
-inrl({
+plugin({
 	pattern: 'fullgpp ?(.*)',
 	type: 'group',
 	fromMe: true,
@@ -272,7 +272,7 @@ inrl({
 	})
 });
 
-inrl({
+plugin({
 	pattern: 'join ?(.*)',
 	type: 'owner',
 	fromMe: true,
@@ -291,7 +291,7 @@ inrl({
 	})
 });
 
-inrl({
+plugin({
 	pattern: 'add ?(.*)',
 	type: 'group',
 	fromMe: true,
@@ -342,7 +342,7 @@ inrl({
 	}
 });
 
-inrl({
+plugin({
 	pattern: 'ginfo ?(.*)',
 	fromMe: true,
 	desc: 'Shows group invite info',
