@@ -1,5 +1,5 @@
 const {
-    inrl,
+    plugin,
     personalDB,
     extractUrlsFromString,
     config,
@@ -12,7 +12,7 @@ const {
 const axios = require("axios");
 const fs = require("fs");
 
-inrl({
+plugin({
     pattern: 'restart ?(.*)',
     desc: 'restart bot',
     react: "🥱",
@@ -22,7 +22,7 @@ inrl({
     await message.send('```restarting```',{linkPreview: linkPreview()})
     process.exit(0);
 })
-inrl({
+plugin({
     pattern: 'plugin ?(.*)',
     desc: 'install external plugins',
     react: "🦥",
@@ -77,7 +77,7 @@ inrl({
         return await message.send(text,{linkPreview:linkPreview()})
     }
 })
-inrl({
+plugin({
     pattern: 'remove ?(.*)',
     desc: 'remove installed external plugin',
     react: "😶",
