@@ -1,11 +1,11 @@
 const {
-	inrl,
+	plugin,
 	mode,
 	config,
 	getJson
 } = require("../lib/");
 
-inrl(
+plugin(
 	{
 		pattern: "dob",
 		fromMe: mode,
@@ -54,7 +54,7 @@ _*☇ seconds :* ${next.remainingSeconds}_`);
 	}
 );
 
-inrl(
+plugin(
 	{
 		pattern: "country",
 		fromMe: mode,
@@ -111,7 +111,7 @@ _*Local Time:* ${times && times.length ? `${times[0].time} (${times[0].zone})` :
 		}, {}, 'react');
 	});
 
-inrl(
+plugin(
 	{
 		pattern: "checkapi",
 		fromMe: mode,
