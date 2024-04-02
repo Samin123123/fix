@@ -1,5 +1,5 @@
 const {
-	inrl,
+	plugin,
 	extractUrlsFromString,
 	mode,
 	getJson,
@@ -9,7 +9,7 @@ const {
 
 
 
-inrl({
+plugin({
 	pattern: 'insta ?(.*)',
 	desc: 'download Instagram medias',
 	react: "😛",
@@ -26,7 +26,7 @@ inrl({
 	if (!urls[0]) return await message.send('_No url found!_');
 	if (!isInstagramURL(urls[0])) return await message.send('_Something went wrong, Please try again!_');
 	let data = await getJson(`${config.BASE_URL}api/download/insta?apikey=${config.INRL_KEY}&url=${urls[0]}`);
-	if (!data.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+	if (!data.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
 	const {
 		result
 	} = data;
@@ -50,7 +50,7 @@ inrl({
 	}, {}, 'poll');
 });
 
-inrl({
+plugin({
 	pattern: 'story ?(.*)',
 	desc: 'download instagram story',
 	react: "😛",
@@ -67,7 +67,7 @@ inrl({
 	if (!urls[0]) return await message.send('_Something went wrong, Please try again!_');
 	if (!isInstagramURL(urls[0])) return await message.send('_No matching results found!_');
 	let data = await getJson(`${config.BASE_URL}api/download/insta?apikey=${config.INRL_KEY}&url=${urls[0]}`);
-	if (!data.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+	if (!data.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
 	const {
 		result
 	} = data;
