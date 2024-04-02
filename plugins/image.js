@@ -1,5 +1,5 @@
 const {
-    inrl,
+    plugin,
     mode,
     badWordDetect,
     linkPreview,
@@ -9,7 +9,7 @@ const {
 const fs = require('fs');
 
 
-inrl({
+plugin({
     pattern: "img",
     react: "🖼",
     fromMe: mode,
@@ -24,7 +24,7 @@ inrl({
     if(number>3 && !message.isCreator) return await message.send('_invalid attempt_',{linkPreview: linkPreview()})
     const data = await getJson(config.BASE_URL+'api/search/gis?text='+text+`&count=${number}&apikey=${config.INRL_KEY}`);
     const {result} = data;
-    if(!data.status) return await message.send(`API key limit exceeded. Get a new API key at ${config.BASE_URL}api/signup. Set var inrl_key: your_api_key`);
+    if(!data.status) return await message.send(`API key limit exceeded. Get a new API key at ${config.BASE_URL}api/signup. Set var INRL_KEY: your_api_key`);
     if(!result) return await message.send('_Not Found_');
     result.map(async(url)=>{
     return await message.sendReply(url,{caption:'*result for*: ```'+text+"```"},'image');
