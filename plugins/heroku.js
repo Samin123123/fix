@@ -23,14 +23,13 @@ function secondsToDhms(seconds) {
         return dDisplay + hDisplay + mDisplay + sDisplay;
 }
 const {
-        inrl,
+        plugin,
         GenListMessage,
-        lang,
         config
 } = require('../lib');
 
 
-inrl({
+plugin({
         pattern: 'setvar ?(.*)',
         fromMe: true,
         desc: 'Set heroku config var',
@@ -49,7 +48,7 @@ inrl({
                 await message.send(`HEROKU : ${error.body.message}`)
         })
 })
-inrl({
+plugin({
         pattern: 'delvar ?(.*)',
         fromMe: true,
         desc: 'Delete heroku config var',
