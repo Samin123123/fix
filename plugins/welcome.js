@@ -1,10 +1,10 @@
 const {
-    inrl,
+    plugin,
     groupDB,
     config
 } = require('../lib')
 
-inrl({
+plugin({
     pattern: 'welcome ?(.*)',
     desc: 'set welcome message',
     react: '😅',
@@ -36,7 +36,7 @@ inrl({
     return await message.send('_*welcome get*_\n_*welcome* thank you for joining &mention_\n*_welcome false_*');
 });
 
-inrl({
+plugin({
     pattern: 'goodbye ?(.*)',
     desc: 'set goodbye message',
     react: '👏',
