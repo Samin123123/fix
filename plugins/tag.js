@@ -1,12 +1,11 @@
 const {
-    inrl,
-    lang,
+    plugin,
     addSpace
 } = require('../lib');
 
-inrl({
+plugin({
     pattern: 'tag ?(.*)',
-    desc: lang.TAG_DESC,
+    desc: 'tag all members',
     type: "owner",
     onlyGroup :true,
     fromMe: true
@@ -35,7 +34,7 @@ inrl({
            return await message.send(`@${message.user.number}`, {mentions: [message.user.jid]});
 } else if(match || message.reply_message.text){
         match =  message.reply_message.text||match;
-    if (!match) return await message.reply(lang.BASE.TEXT);
+    if (!match) return await message.reply('_give me some query_');
     await message.send(match,{mentions: participants.map((a) => a.id)});
    } else if(message.reply_message.i) {
           return await message.forwardMessage(message.jid, message.reply_message, {contextInfo: {mentionedJid: participants.map(a => a.id)}});
