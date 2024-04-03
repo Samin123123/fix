@@ -1,5 +1,5 @@
 const {
-        inrl,
+        plugin,
         mention,
         personalDB,
         GenListMessage,
@@ -7,7 +7,7 @@ const {
 } = require('../lib');
 
 
-inrl({
+plugin({
         pattern: 'mention ?(.*)',
         on: 'all',
         allowBot: true,
