@@ -1,5 +1,5 @@
-const { inrl, config } = require('../lib'); 
-inrl({
+const { plugin, config } = require('../lib'); 
+plugin({
         pattern: 'getvar ?(.*)',
         fromMe: true,
         desc: 'show all config var',
