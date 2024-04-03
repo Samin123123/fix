@@ -1,4 +1,4 @@
-const {inrl,WCG} = require("../lib")
+const {plugin,WCG} = require("../lib")
 
 inrl({
     on: "text",
