@@ -1,6 +1,6 @@
 const ff = require('fluent-ffmpeg');
 const {
-   inrl,
+   plugin,
    mode,
    getBuffer,
    extractUrlsFromString
@@ -13,8 +13,8 @@ const {
    fromBuffer
 } = require('file-type');
 
-inrl({
-   pattern: 'mix',
+plugin({
+   pattern: 'black ? (.*)',
    fromMe: mode,
    desc: 'mix image and audio to video',
    type: "media"
