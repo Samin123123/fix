@@ -1,12 +1,12 @@
 const {
-	inrl,
+	plugin,
 	mode,
 	isUrl,
 	getJson,
 	config
 } = require('../lib');
 
-inrl({
+plugin({
 		pattern: "pindl",
 	        fromMe: mode,
 		desc: "pinterest download",
@@ -19,11 +19,11 @@ inrl({
 			result,
 			status
 		} = await getJson(`${config.BASE_URL}api/download/pinterest?url=${match}&apikey=${config.INRL_KEY}`);
-		if (!status) return await message.send(`API key limit exceeded. Get a new API key at ${config.BASE_URL}api/signup. Set var inrl_key: your_api_key`);
+		if (!status) return await message.send(`API key limit exceeded. Get a new API key at ${config.BASE_URL}api/signup. Set var INRL_KEY: your_api_key`);
 		await message.sendFromUrl(result.url);
 	});
 
-inrl({
+plugin({
 		pattern: "pins",
 	        fromMe: mode,
 		desc: "pinterest search",
@@ -44,7 +44,7 @@ inrl({
 			result,
 			status
 		} = await getJson(`${config.BASE_URL}api/search/pinterest?text=${match}&apikey=${config.INRL_KEY}`);
-		if (!status) return await message.send(`API key limit exceeded. Get a new API key at ${config.BASE_URL}api/signup. Set var inrl_key: your_api_key`);
+		if (!status) return await message.send(`API key limit exceeded. Get a new API key at ${config.BASE_URL}api/signup. Set var INRL_KEY: your_api_key`);
 		let options = [],
 			n = 1;
 		for (const item of result) {
