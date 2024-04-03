@@ -1,5 +1,5 @@
 const {
-	inrl,
+	plugin,
 	extractUrlsFromString,
 	searchYT,
 	getYTInfo,
@@ -9,22 +9,21 @@ const {
 	downloadMp4,
 	getBuffer,
 	toAudio,
-	lang,
 	mode
 } = require('../lib');
 
-inrl({
+plugin({
 	pattern: 'play',
 	type: "downloader",
-	desc: lang.YT.PLAY_DESC,
+	desc: 'download youtube video',
 	fromMe: mode
 }, async (message, match) => {
 	match = match || message.reply_message.text;
-		if (!match) return await message.send(lang.YT.NEED_TEXT);
+		if (!match) return await message.send('_give me some query_');
 		const url = await extractUrlsFromString(match);
 		if (!url[0]) {
 			const result = await searchYT(match);
-			if (!result[0]) return await message.send(lang.BASE.ERROR.format('_Not Found_'));
+			if (!result[0]) return await message.send('_Not Found_');
 			const {
 				title,
 				publishDate,
@@ -46,7 +45,7 @@ inrl({
 			}, "image");
 		}
 });
-inrl({
+plugin({
 	on: 'text',
 	fromMe: mode
 }, async (message, match) => {
@@ -54,7 +53,7 @@ inrl({
 	if (!message.reply_message.text.includes('_Send number as reply to download_')) return;
 		if (message.body.includes("• audio document")) {
 			match = message.body.replace("• audio document", "").trim();
-			await message.send(lang.BASE.DOWNLOAD.format(match));
+			await message.send(`*_downloading:* ${match}_`);
 			const result = await searchYT(match.replace('•', ''));
 			const {
 				seconds,
@@ -72,7 +71,7 @@ inrl({
 			});
 		} else if (message.body.includes("• audio")) {
 			match = message.body.replace("• audio", "").trim();
-			await message.send(lang.BASE.DOWNLOAD.format(match));
+			await message.send(`*_downloading:* ${match}_`);
 			const result = await searchYT(match.replace('•', ''));
 			const {
 				seconds,
@@ -90,7 +89,7 @@ inrl({
 			});
 		} else if (message.body.includes("• video document")) {
 			match = message.body.replace("• video document", "").trim();
-			await message.send(lang.BASE.DOWNLOAD.format(match));
+			await message.send(`*_downloading:* ${match}_`);
 			const result = await searchYT(match.replace('•', ''));
 			const {
 				seconds,
@@ -107,7 +106,7 @@ inrl({
 			});
 		} else if (message.body.includes("• video")) {
 			match = message.body.replace("• video", "").trim();
-			await message.send(`*_downloading_*\n*_${match}_*`);
+			await message.send(`*_downloading:* ${match}_`);
 			const result = await searchYT(match.replace('•', ''));
 			const {
 				seconds,
