@@ -1,19 +1,18 @@
 const {
-  inrl,
+  plugin,
   mode,
   config
 } = require('../lib');
 const fs = require("fs");
 const path = require("path");
 
-inrl(
+plugin(
   {
     pattern: "sticker",
     fromMe: mode,
     desc: 'make stickers',
     react: "🔁",
     type : 'converter',
-    usage : "to convert short video or image to sticker fromate, ex:- sticker[repleyed_msg]"
   },
   async (message, match) => {
     if (!/image|video|webp/.test(message.mime)) return await message.send(
@@ -33,7 +32,7 @@ inrl(
         });
       } else {
         return await message.send(
-          '> invalid meda as you replied'
+          '```invalid meda as you replied```'
         );
       }
   }
