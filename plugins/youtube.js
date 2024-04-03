@@ -1,10 +1,10 @@
 const {
-	inrl,sleep,extractUrlsFromString,searchYT,downloadMp3,downloadMp4,
+	plugin,sleep,extractUrlsFromString,searchYT,downloadMp3,downloadMp4,
 	linkPreview,getYTInfo,getBuffer,AudioMetaData,toAudio,config,mode
 } = require('../lib');
 
 
-inrl({
+plugin({
 	pattern: 'song',
     fromMe: mode,
 	type: "downloader",
@@ -41,7 +41,7 @@ inrl({
 		}, 'audio');
 	}
 });
-inrl({
+plugin({
 	pattern: 'video',
 	fromMe: mode,
 	type: "downloader",
