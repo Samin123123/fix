@@ -1,22 +1,20 @@
 const {
-    inrl,
+    plugin,
     groupDB,
-    lang,
-    isAdmin,
     isBotAdmin,
     config
 } = require('../lib');
 
 
-inrl({
+plugin({
     pattern: 'warn ?(.*)',
-    desc: lang.WARN.DESC,
+    desc: 'give warning to grpup members',
     react: '😑',
     type: 'action',
     fromMe: true,
     onlyGroup: true
 }, async (message, match) => {
-    if (!match && !message.reply_message.sender) return await message.send(lang.WARN.METHODE.format('warn', 'warn', 'warn'));
+    if (!match && !message.reply_message.sender) return await message.send('warn <reply to a user>\nresetwarn');
     if (match == 'get') {
         const {
             warn
@@ -31,7 +29,7 @@ inrl({
         }
         return await message.send(msg, {mentions: [message.reply_message.sender]});
     } else if (match == 'reset') {
-        if (!message.reply_message.sender) return await message.send(lang.BASE.NEED.format('user'));
+        if (!message.reply_message.sender) return await message.send('reply to a user');
         const {
             warn
         } = await groupDB(['warn'], {
@@ -46,14 +44,12 @@ inrl({
                 id: message.reply_message.number
             }
         }, 'delete');
-        return await message.send(lang.BASE.SUCCESS);
+        return await message.send('successfull');
     } else {
         const BotAdmin = await isBotAdmin(message);
         const admin = await isAdmin(message);
-        if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN);
-        if (config.ADMIN_SUDO_ACCESS != 'true' && !message.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-        if (!admin && !message.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-        if (!message.reply_message.sender) return await message.send(lang.BASE.NEED.format('user'));
+        if (!BotAdmin) return await message.reply('Iam not group admin');
+        if (!message.reply_message.sender) return await message.send('replt to a user');
         const reason = match || 'warning';
         const {
             warn
@@ -92,7 +88,7 @@ inrl({
             }, 'delete');
             if (BotAdmin) {
                 await message.client.groupParticipantsUpdate(message.from, [message.reply_message.sender], 'remove');
-                return await message.reply(lang.WARN.MAX)
+                return await message.reply('max warm reached, user kicked')
             };
         };
     };
