@@ -1,10 +1,10 @@
 const {
-	inrl,
+	plugin,
 	mode,
 	truecaller,
 } = require('../lib/');
 
-inrl({
+plugin({
 	pattern: 'true ?(.*)',
 	desc: 'search number on truecaller',
 	type: "search",
