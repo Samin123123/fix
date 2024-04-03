@@ -1,12 +1,12 @@
 const {
-        inrl,
+        plugin,
         commands,
         sleep,
         personalDB,
         linkPreview
 } = require('../lib');
 
-inrl({
+plugin({
         pattern: 'toggle ?(.*)',
         fromMe: true,
         desc: 'disable or enable a command',
