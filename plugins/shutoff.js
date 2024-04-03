@@ -1,12 +1,9 @@
 const {
-	inrl,
+	plugin,
 	personalDB
 } = require('../lib')
-const {
-	exec
-} = require("child_process");
 
-inrl({
+plugin({
 	pattern: 'shutoff ?(.*)',
 	desc: 'turn off the bot',
 	type: 'owner',
@@ -23,10 +20,10 @@ inrl({
 		content: 'true'
 	}, 'set');
 	await message.send('*shutting off!⚫️*');
-	return exec('pm2 restart all')
+	return process.exit(0)
 });
 
-inrl({
+plugin({
 	pattern: 'shuton ?(.*)',
 	desc: 'turn on the bot',
 	type: 'owner',
@@ -43,5 +40,5 @@ inrl({
 		content: 'false'
 	}, 'set');
 	await message.send('*shutting on!⚪️*');
-	return exec('pm2 restart all')
+	return process.exit(0)
 });
