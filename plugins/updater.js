@@ -10,12 +10,12 @@ const heroku = new Heroku({
 	token: process.env.HEROKU_API_KEY
 })
 const {
-	inrl,
+	plugin,
 	GenListMessage,
 	linkPreview
 } = require('../lib');
 
-inrl({
+plugin({
 	pattern: 'update$',
 	fromMe: true,
 	desc: 'update the bot',
@@ -70,12 +70,12 @@ inrl({
 	if (commits.total === 0) {
 		return await message.send('_already up-to-date_', {linkPreview: linkPreview()})
 	} else {
-		let inrlupdate = '*LIST OF NEW UPDATES*';
+		let updates = '*LIST OF NEW UPDATES*';
 		commits['all'].map(
 			(commit) => {
-				inrlupdate += "```commit: " + commit.date.substring(0, 10)+'```\n```message: ' +commit.message+'```\n```author: ' +commit.author_name + "```\n\n";
+				updates += "```commit: " + commit.date.substring(0, 10)+'```\n```message: ' +commit.message+'```\n```author: ' +commit.author_name + "```\n\n";
 			});
-		return await message.send(inrlupdate);
+		return await message.send(updates);
 	}
 }
 });
