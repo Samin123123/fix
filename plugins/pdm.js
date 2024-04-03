@@ -1,10 +1,10 @@
 const {
-    inrl,
+    plugin,
     groupDB,
     config
 } = require('../lib');
 
-inrl({
+plugin({
     pattern: 'pdm ?(.*)',
     desc: 'promote, demote message',
     type: 'manage',
