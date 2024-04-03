@@ -1,10 +1,10 @@
 const {
-	inrl,
+	plugin,
 	poll,
 	PREFIX
 } = require('../lib');
 
-inrl({
+plugin({
 	pattern: 'vote|poll ?(.*)',
 	desc: 'create a poll message',
 	fromMe: true,
