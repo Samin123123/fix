@@ -1,5 +1,5 @@
 const {
-    inrl,
+    plugin,
     fetchJson,
     getBuffer,
     sendUrl,
@@ -10,7 +10,7 @@ const {
 } = require('../lib');
 const fs = require('fs');
 
-inrl({
+plugin({
     pattern: 'url',
     desc: 'convert image url',
     react: "⛰️",
@@ -21,7 +21,7 @@ inrl({
     return await sendUrl(message, message.client);
 });
 
-inrl({
+plugin({
     pattern: 'take',
     desc: 'change sticker and audio authority',
     react: "⚒️",
@@ -48,7 +48,7 @@ inrl({
             },'audio');
         }
     })
-inrl({
+plugin({
     pattern: 'emix',
     desc: 'mix two emojis to a sticker',
     react: "🤌",
