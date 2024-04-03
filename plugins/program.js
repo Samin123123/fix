@@ -1,5 +1,5 @@
 const {
-    inrl,
+    plugin,
     mode,
     config,
     getJson
@@ -11,7 +11,7 @@ const postJson = async (id, options) => {
     return res.data;
 }
 
-inrl({
+plugin({
     pattern: 'emorece ?(.*)',
     fromMe: mode,
     desc: "convert ASCII to morece",
@@ -24,12 +24,12 @@ inrl({
         text: match
     };
     const data = await getJson(config.BASE_URL + `api/program/morece_encode?text=${match}&apikey=${config.INRL_KEY}`);
-    if (!data.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+    if (!data.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
     return await message.send(data.result, {
         quoted: message.data
     }, 'text');
 });
-inrl({
+plugin({
     pattern: 'dmorece ?(.*)',
     fromMe: mode,
     desc: "decode morece to ASCII",
@@ -42,12 +42,12 @@ inrl({
         text: match
     };
     const data = await getJson(config.BASE_URL + `api/program/morece_decode?text=${match}&apikey=${config.INRL_KEY}`);
-    if (!data.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+    if (!data.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
     return await message.send(data.result, {
         quoted: message.data
     }, 'text');
 });
-inrl({
+plugin({
     pattern: 'ujs ?(.*)',
     desc: "minify JavaScript",
     fromMe: mode,
@@ -60,12 +60,12 @@ inrl({
         text: match
     };
     const res = await postJson('js_minify', options);
-    if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+    if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
     return await message.send(res.result, {
         quoted: message.data
     }, 'text');
 });
-inrl({
+plugin({
     pattern: 'ojs ?(.*)',
     fromMe: mode,
     desc: "obfuscate JavaScript",
@@ -78,12 +78,12 @@ inrl({
         text: match
     };
     const res = await postJson('js_obfuscate', options);
-    if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+    if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
     return await message.send(res.result, {
         quoted: message.data
     }, 'text');
 });
-inrl({
+plugin({
     pattern: 'bjs ?(.*)',
     fromMe: mode,
     desc: "beautify JavaScript",
@@ -96,12 +96,12 @@ inrl({
         text: match
     };
     const res = await postJson('js_beautify', options);
-    if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+    if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
     return await message.send(res.result, {
         quoted: message.data
     }, 'text');
 });
-inrl({
+plugin({
     pattern: 'bcss ?(.*)',
     fromMe: mode,
     desc: "beautify css",
@@ -114,13 +114,13 @@ inrl({
         text: match
     };
     const res = await postJson('css_beautify', options);
-    if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+    if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
     return await message.send(res.result, {
         quoted: message.data
     }, 'text');
 
 });
-inrl({
+plugin({
     pattern: 'bhtml ?(.*)',
     fromMe: mode,
     desc: "beautify html",
@@ -133,7 +133,7 @@ inrl({
         text: match
     };
     const res = await postJson('html_beautify', options);
-    if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+    if (!res.status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
     return await message.send(res.result, {
         quoted: message.data
     }, 'text');
