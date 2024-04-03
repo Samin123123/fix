@@ -1,19 +1,18 @@
 const {
-    inrl,
+    plugin,
     mode,
-    TTS,
-    lang
+    TTS
 } = require('../lib');
 
-inrl({
+plugin({
     pattern: 'tts',
     fromMe: mode,
-    desc: lang.TTS_DESC,
+    desc: 'text to speech',
     react: "💔",
     type: "converter"
 }, async (message, match) => {
         match = match || message.reply_message.text;
-        if (!match) return await message.send(lang.BASE.TEXT);
+        if (!match) return await message.send('_please give me some query_');
         let slang = match.match('\\{([a-z]+)\\}');
         let lang = "en";
         if (slang) {
