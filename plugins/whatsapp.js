@@ -1,16 +1,15 @@
 const {
-	inrl,
+	plugin,
 	mode,
 	getCompo,
 	sleep,
-	lang,
 	config
 } = require('../lib');
 const {
 	WA_DEFAULT_EPHEMERAL
 } = require("@whiskeysockets/baileys");
 
-inrl({
+plugin({
         pattern: 'whois ?(.*)',
         fromMe: mode,
         type: 'info',
@@ -43,9 +42,9 @@ inrl({
                 }, 'image')
 })
 
-inrl({
+plugin({
 	pattern: 'del',
-	desc: lang.WHATSAPP.DLT_DESC,
+	desc: 'deleted a message thet send by bot',
 	react: "⚒️",
 	type: 'whatsapp',
 	fromMe: true,
@@ -56,9 +55,9 @@ inrl({
 		key: message.reply_message.data.key
 	}, {}, 'delete');
 });
-inrl({
+plugin({
 	pattern: 'dlt',
-	desc: lang.WHATSAPP.DEL_DESC,
+	desc: 'delete messages using bot',
 	react: "🤌",
 	fromMe: mode,
 	type: 'whatsapp',
@@ -67,30 +66,28 @@ inrl({
 	if (match) return;
 	let admin = await isAdmin(message);
 	let BotAdmin = await isBotAdmin(message);
-	if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN);
-	if (config.ADMIN_SUDO_ACCESS != "true" && !message.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-	if (!admin && !message.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+	if (!BotAdmin) return await message.reply('bot is nog admin');
 	if (!message.reply_message.msg) return message.send(lang.BASE.NEED.format("message"));
 	return await message.send({
 		key: message.reply_message.data.key
 	}, {}, 'delete');
 })
 
-inrl({
+plugin({
 	pattern: '$iswa ?(.*)',
 	fromMe: mode,
-	desc: lang.WHATSAPP.ISWA.ISWA_DISC,
+	desc: 'list users who exist on whatsapp',
 	type: 'search',
 }, async (m, match) => {
 	match = match || m.reply_message.text
-	if (!match) return await m.send(lang.WHATSAPP.ISWA.NO_NUMBER.format(".iswa 920000000x"));
-	if (!match.match('x')) return await m.send(lang.WHATSAPP.ISWA.NOT_VALID.format(".iswa 920000000x"));
+	if (!match) return await m.send(".iswa 920000000x");
+	if (!match.match('x')) return await m.send(".iswa 920000000x");
 	let xlength = match.replace(/[0-9]/gi, '')
-	if (xlength.length > 3) return await m.send(lang.WHATSAPP.ISWA.X_LENGTH)
+	if (xlength.length > 3) return await m.send('x limit reached')
 	let count = xlength.length == 3 ? 1000 : xlength.length == 2 ? 100 : 10;
 	const {
 		key
-	} = await m.send(lang.WHATSAPP.ISWA.WAIT);
+	} = await m.send('please White');
 	let ioo = await getCompo(match)
 	let bcs = [],
 		notFound = []
@@ -134,10 +131,10 @@ inrl({
 });
 
 
-inrl({
+plugin({
 	pattern: '$nowa ?(.*)',
 	fromMe: mode,
-	desc: lang.WHATSAPP.NOWA.DESC,
+	desc: 'list numbers thet not exist on whatsapp',
 	type: 'search',
 }, async (m, match) => {
 	match = match || m.reply_message.text
@@ -162,10 +159,10 @@ inrl({
 	return await m.editMessage(m.jid, bcs, key)
 });
 
-inrl({
+plugin({
 	pattern: 'jid',
 	fromMe: mode,
-	desc: lang.USER.JID,
+	desc: 'get jid',
 	react: "💯",
 	type: "general"
 }, async (message) => {
@@ -175,9 +172,9 @@ inrl({
 		await message.send(message.from)
 	}
 });
-inrl({
+plugin({
 	pattern: 'block',
-	desc: lang.USER.BLOCK_DESC,
+	desc: 'block a user',
 	react: "💯",
 	type: "owner",
 	fromMe: true
@@ -188,9 +185,9 @@ inrl({
 		await message.client.updateBlockStatus(message.from, "block")
 	}
 }); // Block user
-inrl({
+plugin({
 	pattern: 'unblock',
-	desc: lang.USER.UNBLOCK_DESC,
+	desc: 'unblock a person',
 	react: "💯",
 	type: "owner",
 	fromMe: true
@@ -201,9 +198,9 @@ inrl({
 		await message.client.updateBlockStatus(message.from, "unblock") // Unblock user
 	}
 });
-inrl({
+plugin({
 	pattern: "pp",
-	desc: lang.USER.PP.DESC,
+	desc: 'change profile picture',
 	react: "😁",
 	type: 'owner',
 	fromMe: true
@@ -213,9 +210,9 @@ inrl({
 	await message.client.updateProfilePicture(message.botNumber, download);
 	return message.reply(lang.USER.PP.SUCCESS);
 });
-inrl({
+plugin({
 	pattern: "fullpp",
-	desc: lang.USER.FULL_PP.DESC,
+	desc: 'set profile picture',
 	react: "🔥",
 	type: 'owner',
 	fromMe: true
@@ -226,7 +223,7 @@ inrl({
 	return message.reply(lang.USER.FULL_PP.SUCCESS);
 });
 
-inrl({
+plugin({
 	pattern: 'clear ?(.*)',
 	fromMe: true,
 	desc: 'delete whatsapp chat',
@@ -242,7 +239,7 @@ inrl({
 	await message.send('_Cleared_')
 })
 
-inrl({
+plugin({
 	pattern: 'archive ?(.*)',
 	fromMe: true,
 	desc: 'archive whatsapp chat',
@@ -260,7 +257,7 @@ inrl({
 	await message.send('_Archived_')
 })
 
-inrl({
+plugin({
 	pattern: 'unarchive ?(.*)',
 	fromMe: true,
 	desc: 'unarchive whatsapp chat',
@@ -278,7 +275,7 @@ inrl({
 	await message.send('_Unarchived_')
 })
 
-inrl({
+plugin({
 	pattern: 'chatpin ?(.*)',
 	fromMe: true,
 	desc: 'pin a chat',
@@ -290,7 +287,7 @@ inrl({
 	await message.send('_Pined_')
 })
 
-inrl({
+plugin({
 	pattern: 'unpin ?(.*)',
 	fromMe: true,
 	desc: 'unpin a msg',
@@ -302,7 +299,7 @@ inrl({
 	await message.send('_Unpined_')
 })
 
-inrl({
+plugin({
 	pattern: 'setbio ?(.*)',
 	fromMe: true,
 	desc: 'To change your profile status',
@@ -314,7 +311,7 @@ inrl({
 	await message.send('_Profile status updated_')
 })
 
-inrl({
+plugin({
 	pattern: 'setname ?(.*)',
 	fromMe: true,
 	desc: 'To change your profile name',
@@ -326,7 +323,7 @@ inrl({
 	await message.send('_Profile name updated_')
 })
 
-inrl({
+plugin({
 	pattern: 'disappear  ?(.*)',
 	fromMe: true,
 	desc: 'turn on default disappear messages',
@@ -340,7 +337,7 @@ inrl({
 	await message.send('_disappearmessage activated_')
 })
 
-inrl({
+plugin({
 	pattern: 'getprivacy ?(.*)',
 	fromMe: true,
 	desc: 'get your privacy settings',
@@ -379,7 +376,7 @@ inrl({
 		caption: msg
 	}, 'image');
 })
-inrl({
+plugin({
 	pattern: 'lastseen ?(.*)',
 	fromMe: true,
 	desc: 'to change lastseen privacy',
@@ -391,7 +388,7 @@ inrl({
 	await message.client.updateLastSeenPrivacy(match)
 	await message.send(`_Privacy settings *last seen* Updated to *${match}*_`);
 })
-inrl({
+plugin({
 	pattern: 'online ?(.*)',
 	fromMe: true,
 	desc: 'to change online privacy',
@@ -403,7 +400,7 @@ inrl({
 	await message.client.updateOnlinePrivacy(match)
 	await message.send(`_Privacy Updated to *${match}*_`);
 })
-inrl({
+plugin({
 	pattern: 'mypp ?(.*)',
 	fromMe: true,
 	desc: 'privacy setting profile picture',
@@ -415,7 +412,7 @@ inrl({
 	await message.client.updateProfilePicturePrivacy(match)
 	await message.send(`_Privacy Updated to *${match}*_`);
 })
-inrl({
+plugin({
 	pattern: 'mystatus ?(.*)',
 	fromMe: true,
 	desc: 'privacy for my status',
@@ -427,7 +424,7 @@ inrl({
 	await message.client.updateStatusPrivacy(match)
 	await message.send(`_Privacy Updated to *${match}*_`);
 })
-inrl({
+plugin({
 	pattern: 'read ?(.*)',
 	fromMe: true,
 	desc: 'privacy for read message',
@@ -439,7 +436,7 @@ inrl({
 	await message.client.updateReadReceiptsPrivacy(match)
 	await message.send(`_Privacy Updated to *${match}*_`);
 })
-inrl({
+plugin({
 	pattern: 'groupadd ?(.*)',
 	fromMe: true,
 	desc: 'privacy for group add',
