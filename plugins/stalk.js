@@ -1,12 +1,12 @@
 const {
-	inrl,
+	plugin,
 	mode,
 	config,
 	getJson,
 	getBuffer
 } = require('../lib')
 
-inrl({
+plugin({
     pattern: 'ig ?(.*)',
     fromMe: mode,
     desc: 'Insta Profile Search',
@@ -19,7 +19,7 @@ async (message, match) => {
         `${config.BASE_URL}api/stalk/ig?name=${encodeURIComponent(match)}&apikey=${config.INRL_KEY}`
     );
 
-    if (!result || !status) return await message.send(`Please enter a new API key, as the given API key limit has been exceeded. Visit ${config.BASE_URL}api/signup to get a new API key. setvar inrl_key: your API key`);
+    if (!result || !status) return await message.send(`Please enter a new API key, as the given API key limit has been exceeded. Visit ${config.BASE_URL}api/signup to get a new API key. setvar INRL_KEY: your API key`);
     if (!result.user_info) return await message.send(`User not found`);
 
     const { full_name, username, profile_pic_url, posts, following, followers, biography, is_private, is_verified } = result.user_info;
@@ -32,7 +32,7 @@ async (message, match) => {
     );
 });
 
-inrl({
+plugin({
 		pattern: 'ytc ?(.*)',
 	        fromMe: mode,
 		desc: 'stalk yt channel',
@@ -48,7 +48,7 @@ inrl({
 		} = await getJson(
 			`${config.BASE_URL}api/stalk/ytchannel?name=${match}&apikey=${config.INRL_KEY}`
 		)
-		if (!status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+		if (!status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
 		const {
 			name,
 			thumbnail,
@@ -69,7 +69,7 @@ inrl({
 		)
 	}
 )
-inrl({
+plugin({
 		pattern: 'git ?(.*)',
 	        fromMe: mode,
 		desc: 'stalk git user name',
@@ -85,7 +85,7 @@ inrl({
 		} = await getJson(
 			`${config.BASE_URL}api/stalk/github?user=${match}&apikey=${config.INRL_KEY}`
 		)
-		if (!status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar inrl_key: your apikey`);
+		if (!status) return await message.send(`Please enter a new apikey, as the given apikey limit has been exceeded. Visit ${config.BASE_URL}api/signup for gettig a new apikey. setvar INRL_KEY: your apikey`);
 		const {
 			login,
 			type,
