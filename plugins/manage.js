@@ -1,11 +1,11 @@
 const {
-    inrl,
+    plugin,
     groupDB
 } = require('../lib');
 const actions = ['kick','warn','null']
 
 
-inrl({
+plugin({
     pattern: 'antiword ?(.*)',
     desc: 'remove users who use restricted words',
     type: "manage",
@@ -43,7 +43,7 @@ inrl({
     }
 });
 
-inrl({
+plugin({
     pattern: 'antilink ?(.*)',
     desc: 'remove users who use bot',
     type: "manage",
@@ -69,7 +69,7 @@ inrl({
     }
 });
 
-inrl({
+plugin({
     pattern: 'antifake ?(.*)',
     desc: 'remove fake numbers',
     fromMe: true,
@@ -98,7 +98,7 @@ inrl({
     return await message.send(`_Antifake Updated_`);
 });
 
-inrl({
+plugin({
     pattern: 'antidelete ?(.*)',
     desc: 'forward deleted messages',
     type: 'manage',
@@ -119,7 +119,7 @@ inrl({
     }
 });
 
-inrl({
+plugin({
     pattern: 'antibot ?(.*)',
     desc: 'remove users who use bot',
     type: "manage",
@@ -145,7 +145,7 @@ inrl({
     }
 });
 
-inrl({
+plugin({
     pattern: 'antidemote ?(.*)',
     desc: 'demote actor and re-promote demoted person',
     type: 'manage',
@@ -166,7 +166,7 @@ inrl({
     }
 });
 
-inrl({
+plugin({
     pattern: 'antipromote ?(.*)',
     desc: 'demote actor and re-promote demoted person',
     type: 'manage',
