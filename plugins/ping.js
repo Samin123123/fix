@@ -1,10 +1,10 @@
 const {
-       inrl,
+       plugin,
        mode
 } = require('../lib');
 
 
-inrl({
+plugin({
     pattern: 'ping ?(.*)',
     desc: 'check bot speed',
     react: "💯",
