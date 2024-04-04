@@ -1,8 +1,9 @@
 {
   "name": "inrl@4.1.2",
   "description": "simple multi featured whatsapp bot",
-  "keywords": ["whatsapp"],
-  "success_url": "/",
+  "keywords": ["whatsappbot", "bot"],
+  "success_url": "/md/",
+  "app_url": "/qr/",
   "env": {
     "SESSION_ID": {
       "description": "to run the bot",
