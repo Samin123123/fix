@@ -1,5 +1,5 @@
 {
-  "name": "inrl@4.1.2",
+  "name": "bot",
   "description": "simple multi featured whatsapp bot",
   "keywords": ["whatsappbot", "bot"],
   "success_url": "/md/",
