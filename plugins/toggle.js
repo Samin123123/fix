@@ -38,7 +38,7 @@ plugin({
                 return await message.send(`_${cmd} Enabled._`, {linkPreview: linkPreview()})
         } else if(tog == 'true') {
                 await personalDB(['toggle'], {content:{id: cmd}},'delete');
-                return await message.send(`_${cmd} Disabled._`{linkPreview: linkPreview()})
+                return await message.send(`_${cmd} Disabled._`,{linkPreview: linkPreview()})
         }     
 
 })
