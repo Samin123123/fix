@@ -12,7 +12,7 @@ module.exports = {
     },
     PORT: process.env.PORT || 3000,
     BASE_URL : "https://upper-romy-inrl-bot.koyeb.app/",
-    REPO: "inrl-official/inrl-bot-md",
+    REPO: "inr-l/inrl-bot-md",
     BGM_URL : process.env.BGM_URL || "null",
     ANTI_CALL : process.env.ANTI_CALL || 'false',//true,block
     ALLWAYS_ONLINE: toBool(process.env.ALLWAYS_ONLINE || "false"),
@@ -43,7 +43,7 @@ module.exports = {
     RMBG_KEY: process.env.RMBG_KEY,
     OPEN_AI: process.env.OPEN_AI,
     ELEVENLABS: process.env.ELEVENLABS,
-    INRL_KEY: process.env.INRL_KEY || 'free50_inrl',
+    INRL_KEY: process.env.INRL_KEY || 'zeta007',
     OCR_KEY: (process.env.OCR_KEY || 'K84003107488957').trim(),
     DATABASE: DB_URL ? new Sequelize(DB_URL,{dialect:'postgres',ssl:true,protocol: 'postgres', dialectOptions: {native: true,ssl:{require: true,rejectUnauthorized: false}}, logging: false}) : new Sequelize({dialect:'sqlite',storage:'./database.db',logging:false}) 
 };
