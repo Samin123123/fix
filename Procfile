@@ -162,8 +162,8 @@ const Home = ({ socket, SERVER_URL }) => {
           ev: h_m_data_events !== null,
         });
        } else {
-        document.querySelector(".loading-home").style.display = "none";
-        document.querySelector(".loading-main-homepage").style.display = "block";
+        document.querySelector(".loading_home").style.display = "none";
+        document.querySelector(".loading_main_homepage").style.display = "block";
         if(h_m_data_product) setProduct(JSON.parse(h_m_data_product));
         if(h_m_data_top_img) setTopImg(JSON.parse(h_m_data_top_img));
         if(h_m_data_offer) setOffers(JSON.parse(h_m_data_offer));
@@ -171,12 +171,12 @@ const Home = ({ socket, SERVER_URL }) => {
         if(h_m_data_latestProductsList) setLatestProducts(JSON.parse(h_m_data_latestProductsList));
         if(h_m_data_events) setEvents(JSON.parse(h_m_data_events));
        };
-    const animation = document.querySelector(".loading-home");
-    const head = document.querySelector(".head-home");
-    const mainDiv = document.querySelector(".main-homepage");
-    const cart = document.querySelector(".home-cart");
-    const notification = document.querySelector(".home-notification");
-    const profile = document.querySelector(".home-profile");
+    const animation = document.querySelector(".loading_home");
+    const head = document.querySelector(".head_home");
+    const mainDiv = document.querySelector(".main_homepage");
+    const cart = document.querySelector(".home_cart");
+    const notification = document.querySelector(".home_notification");
+    const profile = document.querySelector(".home_profile");
 
     const isSharedBy = location.search
       ? new URLSearchParams(location.search)
@@ -221,8 +221,8 @@ const Home = ({ socket, SERVER_URL }) => {
       }
     };
     socket.on("lists-of-products-home", (product) => {
-      const animation = document.querySelector(".loading-home");
-      document.querySelector(".loading-main-homepage").style.display = "block";
+      const animation = document.querySelector(".loading_home");
+      document.querySelector(".loading_main_homepage").style.display = "block";
       sessionStorage.setItem("h_m_data_product", JSON.stringify(product.product));
       sessionStorage.setItem("h_m_data_top_img", JSON.stringify(product.top_img));
       sessionStorage.setItem("h_m_data_offer", JSON.stringify(product.offer));
@@ -239,7 +239,7 @@ const Home = ({ socket, SERVER_URL }) => {
         let b = User;
         b.reg_pkocd = false;
         localStorage.setItem("AUTH-T", JSON.stringify(b));
-        const error = document.querySelector(".error-home");
+        const error = document.querySelector(".error_home");
         error.style.display = "block";
         error.innerText = "Internal server Error!";
         setTimeout(() => {
@@ -311,9 +311,9 @@ const Home = ({ socket, SERVER_URL }) => {
     return () => observer.disconnect();
   }, [product]);
   useEffect(() => {
-    const divScrollOne = document.querySelector(".three-div-one");
-    const divScrollTwo = document.querySelector(".three-div-two");
-    const divScrollThree = document.querySelector(".three-div-three");
+    const divScrollOne = document.querySelector(".three_div_one");
+    const divScrollTwo = document.querySelector(".three_div_two");
+    const divScrollThree = document.querySelector(".three_div_three");
     socket.on("new-more-products-home", (newProduct) => {
       if (newProduct.id === 1) {
         let list = [...product["1"].list];
@@ -438,7 +438,7 @@ const Home = ({ socket, SERVER_URL }) => {
     };
   }, [product]);
   useEffect(() => {
-    const main = document.querySelector(".top-offers-home");
+    const main = document.querySelector(".top_offers_home");
     if (!main) return;
     const price = document.querySelector(".top-offers-home #price");
     const time = document.querySelector(".top-offers-home #time");
@@ -484,7 +484,7 @@ const Home = ({ socket, SERVER_URL }) => {
   }, [offers]);
   useEffect(() => {
     if (topImg.status !== true) return;
-    const mD = document.querySelector(".list-fortop-imgs");
+    const mD = document.querySelector(".list_fortop_imgs");
     if (!mD) return;
     const maxScroll = mD.scrollWidth - mD.clientWidth;
     let i = 0,
@@ -493,12 +493,11 @@ const Home = ({ socket, SERVER_URL }) => {
     const interval = setInterval(() => {
       if (isInTouch === false) {
         const previousDot = document.querySelector(".topdots" + i);
-        if (previousDot) previousDot.classList.remove("new-classfordot");
-
+        if (previousDot) previousDot.classList.remove("new_classfordot");
         i = (i + 1) % topImg.img.length;
 
         const currentDot = document.querySelector(".topdots" + i);
-        if (currentDot) currentDot.classList.add("new-classfordot");
+        if (currentDot) currentDot.classList.add("new_classfordot");
 
         const scrollAmount = mD.clientWidth * i;
         if (scrollAmount > maxScroll) {
@@ -525,7 +524,7 @@ const Home = ({ socket, SERVER_URL }) => {
     return () => clearInterval(interval);
   }, [topImg]);
   useEffect(() => {
-    const mD = document.querySelector(".scrl-ctgy-hm");
+    const mD = document.querySelector(".scrl_ctgy_hm");
     const element = document.querySelector(".scrl-ctgy-hm div");
     if (!mD || !categoryList || !element) return;
     let i = 0,
@@ -562,13 +561,13 @@ const Home = ({ socket, SERVER_URL }) => {
   }, [categoryList]);
   const checkMenu = useCallback(() => {
     if (menu === false) {
-      document.querySelector(".menu-home").style.width = "250px";
+      document.querySelector(".menu_home").style.width = "250px";
       setTimeout(function () {
-        document.querySelector(".menu-home").classList.add("load-menu");
+        document.querySelector(".menu_home").classList.add("load-menu");
       }, 400);
     } else {
-      document.querySelector(".menu-home").classList.remove("load-menu");
-      document.querySelector(".menu-home").style.width = "0";
+      document.querySelector(".menu_home").classList.remove("load-menu");
+      document.querySelector(".menu_home").style.width = "0";
     }
     setMenu((a) => !a);
   }, [menu]);
@@ -595,12 +594,12 @@ const Home = ({ socket, SERVER_URL }) => {
   };
   const switchPage = useCallback(
     (page) => {
-      const animation = document.querySelector(".loading-home");
-      const head = document.querySelector(".head-home");
-      const mainDiv = document.querySelector(".main-homepage");
-      const cart = document.querySelector(".home-cart");
-      const notification = document.querySelector(".home-notification");
-      const profile = document.querySelector(".home-profile");
+      const animation = document.querySelector(".loading_home");
+      const head = document.querySelector(".head_home");
+      const mainDiv = document.querySelector(".main_homepage");
+      const cart = document.querySelector(".home_cart");
+      const notification = document.querySelector(".home_notification");
+      const profile = document.querySelector(".home_profile");
       if (page === "home") {
         head.style.display = "flex";
         mainDiv.style.display = "block";
@@ -677,8 +676,8 @@ const Home = ({ socket, SERVER_URL }) => {
     id ? router.push(`/offer/${id}`) : router.push(`/offer`);
   };
   const openB = (For) => {
-    const div = document.querySelector(".btm-ph");
-    const bg = document.querySelector(".f-b-hp");
+    const div = document.querySelector(".btm_ph");
+    const bg = document.querySelector(".f_b_hp");
     if (For === "edit") {
       div.style.display = "block";
       bg.style.filter = "blur(1px)";
@@ -730,12 +729,12 @@ const Home = ({ socket, SERVER_URL }) => {
     }
   };
   const closeB = () => {
-    document.querySelector(".btm-ph").style.display = "none";
-    document.querySelector(".f-b-hp").style.filter = "none";
+    document.querySelector(".btm_ph").style.display = "none";
+    document.querySelector(".f_b_hp").style.filter = "none";
   };
   const openPp = () => {
-    document.querySelector(".popup-hp").style.display = "block";
-    document.querySelector(".f-b-hp").style.filter = "blur(3px)";
+    document.querySelector(".popup_hp").style.display = "block";
+    document.querySelector(".f_b_hp").style.filter = "blur(3px)";
   };
   const closePp = () => {
     setBhpup({
@@ -764,26 +763,26 @@ const Home = ({ socket, SERVER_URL }) => {
         notifications={notifications}
         setNotifications={setNotifications}
       />
-      <header className={styles.headHome}>
+      <header className={styles.head_home}>
         {menu ? (
           <IoClose onClick={checkMenu} className={styles.close} />
         ) : (
           <AiOutlineMenu onClick={checkMenu} className={styles.icon} />
         )}
-        <img loading="lazy" className={styles.homeLogo} src={logo} alt="Logo" />
-        <div className={styles.homeTopAdmin}></div>
+        <img loading="lazy" className={styles.home_logo} src={logo} alt="Logo" />
+        <div className={styles.home_top_admin}></div>
         <IoIosHeart className={styles.wish} />
         <MdOutlineSupportAgent
           className={styles.support}
           onClick={() => renderTo("/support")}
         />
         {accInfo && accInfo.img ? (
-          <img loading="lazy" className={styles.userLogo} src={accInfo.img} />
+          <img loading="lazy" className={styles.user_logo} src={accInfo.img} />
         ) : (
-          <FaRegCircleUser className={styles.showUserInfoHome}></FaRegCircleUser>
+          <FaRegCircleUser className={styles.show_user_info_home}></FaRegCircleUser>
         )}
       </header>
-      <div className={styles.menuHome}>
+      <div className={styles.menu_home}>
         <a href="#home">Home</a>
         <a href="#products">Products</a>
         <a href="#sale">Sale Items</a>
@@ -794,10 +793,10 @@ const Home = ({ socket, SERVER_URL }) => {
         <a href="#wishlist">Wishlist</a>
         <a href="#profile">Profile</a>
       </div>
-      <div className={styles.mainHomepage}>
-        <img loading="lazy" alt="Loading" className={styles.loadingHome} src={loading} />
-        <div className={styles.loadingMainHomepage}>
-          <form className={styles.homeSearch} onSubmit={inputHome}>
+      <div className={styles.main_homepage}>
+        <img loading="lazy" alt="Loading" className={styles.loading_home} src={loading} />
+        <div className={styles.loading_main_homepage}>
+          <form className={styles.home_search} onSubmit={inputHome}>
             <input
               type="text"
               id="input"
@@ -805,38 +804,38 @@ const Home = ({ socket, SERVER_URL }) => {
             />
             <IoMdSearch id="search" onClick={inputHome} />
           </form>
-          <p className={styles.discountMsg}>
+          <p className={styles.discount_msg}>
             <CiLocationOn id="location" /> Add delivery location to check extra
             discount
           </p>
-          <div className={styles.usersAttract}>
-            <div className={styles.secureUa}>
-              <RiSecurePaymentLine className={styles.iconUa} />
+          <div className={styles.users_attract}>
+            <div className={styles.secure_ua}>
+              <RiSecurePaymentLine className={styles.icon_ua} />
               <p>secure transaction</p>
             </div>
-            <div className={styles.deliveryUa}>
-              <LuTruck className={styles.iconUa} />
+            <div className={styles.delivery_ua}>
+              <LuTruck className={styles.icon_ua} />
               <p>fast delivery</p>
             </div>
-            <div className={styles.priceUa}>
-              <IoIosPricetag className={styles.iconUa} />
+            <div className={styles.price_ua}>
+              <IoIosPricetag className={styles.icon_ua} />
               <p>affordable price</p>
             </div>
-            <div className={styles.supportUa}>
-              <BiSupport className={styles.iconUa} />
+            <div className={styles.support_ua}>
+              <BiSupport className={styles.icon_ua} />
               <p>customer support</p>
             </div>
-            <div className={styles.exchangeUa}>
-              <FaExchangeAlt className={styles.iconUa} />
+            <div className={styles.exchange_ua}>
+              <FaExchangeAlt className={styles.icon_ua} />
               <p>easy exchange</p>
             </div>
           </div>
           {topImg.status === true && topImg.img.length !== 0 ? (
-            <div className={styles.scrollableImgs}>
-              <div className={styles.listFortopImgs}>
+            <div className={styles.scrollable_imgs}>
+              <div className={styles.list_fortop_imgs}>
                 {topImg.img.map((a, i) => (
                   <div
-                    className={styles.imgsTos}
+                    className={styles.imgs_tos}
                     key={i}
                     onClick={() => renderTo(a.to)}
                   >
@@ -844,8 +843,8 @@ const Home = ({ socket, SERVER_URL }) => {
                   </div>
                 ))}
               </div>
-              <div className={styles.forListDots}>
-                <div className={styles.forShadowTodot}>
+              <div className={styles.for_list_dots}>
+                <div className={styles.for_shadow_todot}>
                   {topImg.img.map((_, i) => (
                     <p key={i} className={`topdots${i} dotslist-all`}></p>
                   ))}
@@ -854,11 +853,11 @@ const Home = ({ socket, SERVER_URL }) => {
             </div>
           ) : null}
           {
-            events[1] && <img loading="lazy" className={styles.eventsImg} src={events[1].img} alt={events[1].go} onClick={() => renderTo(events[1].go)} />
+            events[1] && <img loading="lazy" className={styles.events_img} src={events[1].img} alt={events[1].go} onClick={() => renderTo(events[1].go)} />
           }
           {offers.status === true ? (
             <div
-              className={styles.topOffersHome}
+              className={styles.top_offers_home}
               onClick={() => goToNewOffers(offers.id)}
             >
               <img loading="lazy" src={offers.img} alt="today offer" />
@@ -870,30 +869,30 @@ const Home = ({ socket, SERVER_URL }) => {
               </div>
             </div>
           ) : null}
-          <div className={styles.threeDivOne}>
-          <h2 className={styles.catogeryDivOne}>{product["1"].head}</h2>
+          <div className={styles.three_div_one}>
+          <h2 className={styles.catogery_div_one}>{product["1"].head}</h2>
           <div className={styles.divsion}>
           {product["1"].list.map((a, index) =>
               a.type === "loading" ? (
-                <div key={index} className={styles.prodctsListHome}>
+                <div key={index} className={styles.prodcts_list_home}>
                   <img loading="lazy"
                     alt="Loading"
-                    className={styles.lastLoadingProduct}
+                    className={styles.last_loading_product}
                     src={loading}
                   />
                 </div>
               ) : a.type === "done" ? (
-                <div key={index} className={styles.prodctsListHome}>
+                <div key={index} className={styles.prodcts_list_home}>
                   <h3>There have no more products to load</h3>
                 </div>
               ) : (
                 <div
                   key={index}
-                  className={styles.prodctsListHome}
+                  className={styles.prodcts_list_home}
                   id={"infoPLH" + a.id}
                 >
                   <div
-                    className={styles.productInfoHome}
+                    className={styles.product_info_home}
                     id={"infoPIH" + a.id}
                   >
                     <div className={styles.image}>
@@ -925,11 +924,11 @@ const Home = ({ socket, SERVER_URL }) => {
                     />
                     </div>
                   </div>
-                  <div className={styles.productOnclickHm} id={"infoANH" + a.id}>
+                  <div className={styles.product_onclick_hm} id={"infoANH" + a.id}>
                     <img loading="lazy"
                       alt="p-bh"
                       src={loading}
-                      className={styles.lastLoadingProduct}
+                      className={styles.last_loading_product}
                     />
                   </div>
                 </div>
@@ -938,11 +937,11 @@ const Home = ({ socket, SERVER_URL }) => {
           </div>
           </div>
           {
-            events[2] && <img loading="lazy" className={styles.eventsImg} src={events[2].img} alt={events[2].go} onClick={() => renderTo(events[2].go)} />
+            events[2] && <img loading="lazy" className={styles.events_img} src={events[2].img} alt={events[2].go} onClick={() => renderTo(events[2].go)} />
           }
-          <div className={styles.topCategoryHomeSl}>
+          <div className={styles.top_category_home_sl}>
             <h2>Trending Categorys</h2>
-            <div className={styles.scrlCtgyHm}>
+            <div className={styles.scrl_ctgy_hm}>
               {categoryList &&
                 categoryList.map((a, i) => (
                   <div key={i} onClick={() => renderTo(`/category/${a.to}`)}>
@@ -951,30 +950,30 @@ const Home = ({ socket, SERVER_URL }) => {
                 ))}
             </div>
           </div>
-          <div className={styles.threeDivTwo}>
-          <h2 className={styles.catogeryDiv}>{product["2"].head}</h2>
+          <div className={styles.three_div_two}>
+          <h2 className={styles.catogery_div}>{product["2"].head}</h2>
           <div className={styles.divsion}>
           {product["2"].list.map((a, index) =>
               a.type === "loading" ? (
-                <div key={index} className={styles.prodctsListHome}>
+                <div key={index} className={styles.prodcts_list_home}>
                   <img loading="lazy"
                     alt="Loading"
-                    className={styles.lastLoadingProduct}
+                    className={styles.last_loading_product}
                     src={loading}
                   />
                 </div>
               ) : a.type === "done" ? (
-                <div key={index} className={styles.prodctsListHome}>
+                <div key={index} className={styles.prodcts_list_home}>
                   <h3>There have no more products to load</h3>
                 </div>
               ) : (
                 <div
                   key={index}
-                  className={styles.prodctsListHome}
+                  className={styles.prodcts_list_home}
                   id={"infoPLH" + a.id}
                 >
                   <div
-                    className={styles.productInfoHome}
+                    className={styles.product_info_home}
                     id={"infoPIH" + a.id}
                   >
                     <div className={styles.image}>
@@ -1006,11 +1005,11 @@ const Home = ({ socket, SERVER_URL }) => {
                     />
                     </div>
                   </div>
-                  <div className={styles.productOnclickHm} id={"infoANH" + a.id}>
+                  <div className={styles.product_onclick_hm} id={"infoANH" + a.id}>
                     <img loading="lazy"
                       alt="Loading"
                       src={loading}
-                      className={styles.lastLoadingProduct}
+                      className={styles.last_loading_product}
                     />
                   </div>
                 </div>
@@ -1018,30 +1017,30 @@ const Home = ({ socket, SERVER_URL }) => {
             )}
           </div>
           </div>
-          <div className={styles.threeDivThree}>
-          <h2 className={styles.catogeryDiv}>{product["3"].head}</h2>
+          <div className={styles.three_div_three}>
+          <h2 className={styles.catogery_div}>{product["3"].head}</h2>
           <div className={styles.divsion}>
           {product["3"].list.map((a, index) =>
               a.type === "loading" ? (
-                <div key={index} className={styles.prodctsListHome}>
+                <div key={index} className={styles.prodcts_list_home}>
                   <img loading="lazy"
                     alt="Loading"
-                    className={styles.lastLoadingProduct}
+                    className={styles.last_loading_product}
                     src={loading}
                   />
                 </div>
               ) : a.type === "done" ? (
-                <div key={index} className={styles.prodctsListHome}>
+                <div key={index} className={styles.prodcts_list_home}>
                   <h3>There have no more products to load</h3>
                 </div>
               ) : (
                 <div
                   key={index}
-                  className={styles.prodctsListHome}
+                  className={styles.prodcts_list_home}
                   id={"infoPLH" + a.id}
                 >
                   <div
-                    className={styles.productInfoHome}
+                    className={styles.product_info_home}
                     id={"infoPIH" + a.id}
                   >
                     <div className={styles.image}>
@@ -1073,11 +1072,11 @@ const Home = ({ socket, SERVER_URL }) => {
                     />
                     </div>
                   </div>
-                  <div className={styles.productOnclickHm} id={"infoANH" + a.id}>
+                  <div className={styles.product_onclick_hm} id={"infoANH" + a.id}>
                     <img loading="lazy"
                       alt="Loading"
                       src={loading}
-                      className={styles.lastLoadingProduct}
+                      className={styles.last_loading_product}
                     />
                   </div>
                 </div>
@@ -1085,10 +1084,10 @@ const Home = ({ socket, SERVER_URL }) => {
             )}
           </div>
           </div>
-          <div className={styles.ltstPrHm}>
+          <div className={styles.ltst_pr_hm}>
             <h2>Latest Products</h2>
             {latestProducts.map((a, i) => (
-              <div className={styles.listedLetstPHm} key={i} ref={(el) => (contentRefs.current[i] = el)}>
+              <div className={styles.listed_letst_p_hm} key={i} ref={(el) => (contentRefs.current[i] = el)}>
                 <IoIosHeart
                   className={styles.heart}
                   style={{
@@ -1096,7 +1095,7 @@ const Home = ({ socket, SERVER_URL }) => {
                   }}
                 />
                 {!a.isAvailable && <div id="non-ltst">item not available</div>}
-                <div className={styles.tlistImgLtstHm}>
+                <div className={styles.tlist_img_ltst_hm}>
                   <img loading="lazy"
                     src={a.img}
                     alt={a.subtitle}
@@ -1106,7 +1105,7 @@ const Home = ({ socket, SERVER_URL }) => {
                   />
                 </div>
                 <div
-                  className={styles.dataLtstHm}
+                  className={styles.data_ltst_hm}
                   style={{
                     filter: a.isAvailable ? "none" : "blur(1px)",
                   }}
@@ -1142,7 +1141,7 @@ const Home = ({ socket, SERVER_URL }) => {
               <p>Address: Mavoor, kozikode , Kerala, India</p>
             </div>
 
-            <div className={styles.socialLinks}>
+            <div className={styles.social_links}>
               <h4>Follow Us</h4>
               <a href="https://www.instagram.com/inrl.cc" className={styles.instagram}>
               <FaInstagram className={styles.icon} size={20} />Instagram
@@ -1160,7 +1159,7 @@ const Home = ({ socket, SERVER_URL }) => {
 
             <div>
               <h4>Trending Categories</h4>
-              <div className={styles.trendingLinks}>
+              <div className={styles.trending_links}>
                 <a href="/category/shoes">Shoes</a>
                 <a href="/category/watches">Watches</a>
                 <a href="/category/airpods">AirPods</a>
@@ -1171,7 +1170,7 @@ const Home = ({ socket, SERVER_URL }) => {
             <div>
               <h4>Important Information</h4>
               <p>
-                <span className={styles.importantIcon}>⚠️</span>We collaborate with
+                <span className={styles.important_icon}>⚠️</span>We collaborate with
                 various Instagram resellers. Please ensure the reseller is
                 trusted by verifying the Inrl badge. We are not responsible for
                 transactions with unverified resellers. If there is no Inrl
@@ -1182,16 +1181,16 @@ const Home = ({ socket, SERVER_URL }) => {
 
             <div className={styles.divider}>
               <p>
-                &copy; 2024 <span className={styles.inrlBold}>INRL</span>. All Rights
+                &copy; 2024 <span className={styles.inrl_bold}>INRL</span>. All Rights
                 Reserved.
               </p>
             </div>
           </footer>
         </div>
       </div>
-      <div className={styles.homeCart}>
+      <div className={styles.home_cart}>
         {!User || !User.reg_pkocd ? (
-          <div className={styles.loginFirst}>
+          <div className={styles.login_first}>
             <h3>
               For our records, we do not store any of your information before
               you sign up.
@@ -1201,7 +1200,7 @@ const Home = ({ socket, SERVER_URL }) => {
         ) : !cartMsg.status ? (
            <ShimmerDownListLoading />
         ) : cartMsg.status && cartMsg.msg === "nothing" ? (
-          <h3 className={styles.nullCart}>
+          <h3 className={styles.null_cart}>
             Explore our page further and shop for incredible deals today! Don't
             miss out on our amazing products with nothing in your cart - start
             adding items now!
@@ -1210,83 +1209,83 @@ const Home = ({ socket, SERVER_URL }) => {
           cartMsg.list.map((list, index) =>
             list.type.includes("pending") ? (
               <div
-                className={styles.pendingCartBHm}
+                className={styles.pending_cart_b_hm}
                 key={index}
                 onClick={() => myOrder(list.id)}
               >
-                <div className={styles.imgCPHm}>
+                <div className={styles.img_c_p_hm}>
                   <img loading="lazy" alt={list.name} src={list.img} />
                 </div>
-                <div className={styles.infoCPHm}>
-                  <p className={styles.nameCa}>{list.name}</p>
-                  <p className={styles.ordrAtHc}>
+                <div className={styles.info_c_p_hm}>
+                  <p className={styles.name_ca}>{list.name}</p>
+                  <p className={styles.ordr_at_hc}>
                     ordered At: <span>{list.ordered}</span>
                   </p>
-                  <p className={styles.dlvryAtHc}>
+                  <p className={styles.dlvry_at_hc}>
                     delivery At: <span>{list.delivery}</span>
                   </p>
                   {list.type === "pending:bot" ? (
-                    <p className={styles.wrnHc}>this date may be change</p>
+                    <p className={styles.wrn_hc}>this date may be change</p>
                   ) : null}
                   {list.discount ? (
-                    <div className={styles.pricessCa}>
-                      <p className={styles.priceCa}>
+                    <div className={styles.pricess_ca}>
+                      <p className={styles.price_ca}>
                         <span>₹</span> {list.total}
                       </p>
-                      <p className={styles.actulCa}>
+                      <p className={styles.actul_ca}>
                         <del>{list.price}</del>
                       </p>
                     </div>
                   ) : (
-                    <p className={styles.actulCa}>
+                    <p className={styles.actul_ca}>
                       <span>₹</span> {list.price}
                     </p>
                   )}
-                  <p className={styles.quantityCa}>Qty: {list.quantity}</p>
+                  <p className={styles.quantity_ca}>Qty: {list.quantity}</p>
                 </div>
                 <p
-                  className={styles.descCa}
+                  className={styles.desc_ca}
                   dangerouslySetInnerHTML={{ __html: list.desc }}
                 />
               </div>
             ) : (
-              <div key={index} className={styles.cartListHome}>
+              <div key={index} className={styles.cart_list_home}>
                 <div
-                  className={styles.imgCartFivHm}
+                  className={styles.img_cart_fiv_hm}
                   onClick={() => loadProduct(list.id)}
                 >
                   <img loading="lazy" alt={list.name} src={list.img} />
                 </div>
-                <div className={styles.cartInfos}>
-                  <p className={styles.nameCa}>{list.name}</p>
+                <div className={styles.cart_infos}>
+                  <p className={styles.name_ca}>{list.name}</p>
                   {list.type === "done" ? (
-                    <p className={styles.deliveredCa}>
-                      delivered <MdDownloadDone className={styles.iconCa} />
+                    <p className={styles.delivered_ca}>
+                      delivered <MdDownloadDone className={styles.icon_ca} />
                     </p>
                   ) : list.discount ? (
-                    <div className={styles.pricessCa}>
-                      <p className={styles.priceCa}>
+                    <div className={styles.pricess_ca}>
+                      <p className={styles.price_ca}>
                         <span>₹</span> {list.total}
                       </p>
-                      <p className={styles.actulCa}>
+                      <p className={styles.actul_ca}>
                         <del>{list.price}</del>
                       </p>
                     </div>
                   ) : (
-                    <p className={styles.actulCa}>
+                    <p className={styles.actul_ca}>
                       <span>₹</span> {list.price}
                     </p>
                   )}
                   <p
-                    className={styles.descCa}
+                    className={styles.desc_ca}
                     dangerouslySetInnerHTML={{ __html: list.desc }}
                     onClick={() => loadProduct(list.id)}
                   />
-                  <p className={styles.quantityCa}>Qty: {list.quantity}</p>
+                  <p className={styles.quantity_ca}>Qty: {list.quantity}</p>
                 </div>
                 {list.type === "cart" ? (
                   <IoHeart
-                    className={styles.saveCa}
+                    className={styles.save_ca}
                     id={"cart-cc" + list.id}
                     onClick={() => removeFromCart("cart-cc" + list.id)}
                   />
@@ -1296,44 +1295,44 @@ const Home = ({ socket, SERVER_URL }) => {
           )
         ) : null}
       </div>
-      <div className={styles.homeNotification}>
+      <div className={styles.home_notification}>
         {notification.status === false ? (
-          <img loading="lazy" alt="Loading" className={styles.loadingHome} src={loading} />
+          <img loading="lazy" alt="Loading" className={styles.loading_home} src={loading} />
         ) : notification.status === null ? (
           <h3>There are currently no notifications to display</h3>
         ) : (
           <div>
             <h1>Notifications</h1>
             {notification.list.map((a, i) => (
-              <div className={styles.notificationHm} key={i}>
+              <div className={styles.notification_hm} key={i}>
                 <h2>{a.title}</h2>
-                <p className={styles.dateTime}>{a.date + " " + a.time}</p>
-                <p className={styles.sentBy}>Sent by: {a.send}</p>
+                <p className={styles.date_time}>{a.date + " " + a.time}</p>
+                <p className={styles.sent_by}>Sent by: {a.send}</p>
                 <p>{a.description}</p>
               </div>
             ))}
           </div>
         )}
       </div>
-      <div className={styles.homeProfile}>
-        <div className={styles.popupHp}>
-          <div className={styles.cntPpHp}>
-            <p className={styles.clsPpHp} onClick={closePp}>
+      <div className={styles.home_profile}>
+        <div className={styles.popup_hp}>
+          <div className={styles.cnt_pp_hp}>
+            <p className={styles.cls_pp_hp} onClick={closePp}>
               &times;
             </p>
             <h3>this action can't be retrievable!</h3>
-            <p className={styles.descPpHp}>
+            <p className={styles.desc_pp_hp}>
               do you really want remove your account?{" "}
             </p>
             <button onClick={closePp}>No</button>
             <button onClick={dltAcc}>Yes</button>
           </div>
         </div>
-        <div className={styles.fBHp}>
+        <div className={styles.f_b_hp}>
           <h2>Basic info</h2>
-          <p className={styles.infoHp}>you are not logind</p>
-          <div className={styles.containerHp}>
-            <div className={styles.profileHeaderHp}>
+          <p className={styles.info_hp}>you are not logind</p>
+          <div className={styles.container_hp}>
+            <div className={styles.profile_header_hp}>
               <img loading="lazy"
                 src={
                   accInfo && accInfo.img
@@ -1342,7 +1341,7 @@ const Home = ({ socket, SERVER_URL }) => {
                 }
                 alt="Profile Picture"
               />
-              <div className={styles.userInfoHp}>
+              <div className={styles.user_info_hp}>
                 <p>
                   <span>Name: </span>
                   {accInfo ? accInfo.username : "not found"}
@@ -1352,7 +1351,7 @@ const Home = ({ socket, SERVER_URL }) => {
                   {accInfo ? accInfo.mail : "not found"}
                 </p>
                 <button
-                  className={styles.editButtonHp}
+                  className={styles.edit_button_hp}
                   onClick={() => openB("edit")}
                 >
                   {User && User.reg_pkocd ? "Edit Profile" : "Login"}
@@ -1361,7 +1360,7 @@ const Home = ({ socket, SERVER_URL }) => {
             </div>
           </div>
           <h2>activities</h2>
-          <div className={styles.hmActPr}>
+          <div className={styles.hm_act_pr}>
             <button onClick={() => openB("sale")}>
               <FaMoneyBillTrendUp className={styles.icon} />
               sell through <span>INRL</span>
@@ -1380,7 +1379,7 @@ const Home = ({ socket, SERVER_URL }) => {
             </button>
           </div>
           <h2>Feedback & Information</h2>
-          <div className={styles.notificationHm}>
+          <div className={styles.notification_hm}>
                 <p>
                     Delivery Notification{" "}
                     <ToggleButton
@@ -1427,18 +1426,18 @@ const Home = ({ socket, SERVER_URL }) => {
                 </p>
             </div>
           <h2>Danger Zone</h2>
-          <div className={styles.dngrHm}>
+          <div className={styles.dngr_hm}>
             <button onClick={loginNow}>Logout</button>
             <button onClick={openPp}>delete my account</button>
           </div>
         </div>
-        <div className={styles.btmPh}>
-          <p className={styles.clsHp} onClick={closeB}>
+        <div className={styles.btm_ph}>
+          <p className={styles.cls_hp} onClick={closeB}>
             &times;
           </p>
-          <div className={styles.btCntHp}>
+          <div className={styles.bt_cnt_hp}>
             {bhpup.status === true ? (
-              <div className={styles.contentsHp}>
+              <div className={styles.contents_hp}>
                 {bhpup.for === "edit" ? (
                   <EditProfile
                     auth={User}
@@ -1470,8 +1469,8 @@ const Home = ({ socket, SERVER_URL }) => {
           </div>
         </div>
       </div>
-      <div className={styles.bottomHome}>
-        <div className={styles.iconBo}>
+      <div className={styles.bottom_home}>
+        <div className={styles.icon_bo}>
           <CiShop
             className={styles.icon}
             id="home-icon-home"
@@ -1479,7 +1478,7 @@ const Home = ({ socket, SERVER_URL }) => {
           />
           <p>Home</p>
         </div>
-        <div className={styles.iconBo}>
+        <div className={styles.icon_bo}>
           <CiShoppingCart
             className={styles.icon}
             id="home-icon-cart"
@@ -1487,7 +1486,7 @@ const Home = ({ socket, SERVER_URL }) => {
           />
           <p>Cart</p>
         </div>
-        <div className={styles.iconBo}>
+        <div className={styles.icon_bo}>
           <IoIosNotificationsOutline
             className={styles.icon}
             id="home-icon-notification"
@@ -1495,7 +1494,7 @@ const Home = ({ socket, SERVER_URL }) => {
           />
           <p>notification</p>
         </div>
-        <div className={styles.iconBo}>
+        <div className={styles.icon_bo}>
           <CiUser
             className={styles.icon}
             id="home-icon-profile"
