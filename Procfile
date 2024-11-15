@@ -1,7 +1,3 @@
-=== stdout ===
-
-=== stdout ===
-
 import { useState, useEffect, useCallback, useRef } from "react";
 import styles from '../../styles/main.module.css'
 import Head from 'next/head';
@@ -166,8 +162,8 @@ const Home = ({ socket, SERVER_URL }) => {
           ev: h_m_data_events !== null,
         });
        } else {
-        document.querySelector(styles.loading_home).style.display = "none";
-        document.querySelector(styles.loading_main_homepage).style.display = "block";
+        document.querySelector(`.${styles.loading_home}`).style.display = "none";
+        document.querySelector(`.${styles.loading_main_homepage}`).style.display = "block";
         if(h_m_data_product) setProduct(JSON.parse(h_m_data_product));
         if(h_m_data_top_img) setTopImg(JSON.parse(h_m_data_top_img));
         if(h_m_data_offer) setOffers(JSON.parse(h_m_data_offer));
@@ -175,12 +171,12 @@ const Home = ({ socket, SERVER_URL }) => {
         if(h_m_data_latestProductsList) setLatestProducts(JSON.parse(h_m_data_latestProductsList));
         if(h_m_data_events) setEvents(JSON.parse(h_m_data_events));
        };
-    const animation = document.querySelector(styles.loading_home);
-    const head = document.querySelector(styles.head_home);
-    const mainDiv = document.querySelector(styles.main_homepage);
-    const cart = document.querySelector(styles.home_cart);
-    const notification = document.querySelector(styles.home_notification);
-    const profile = document.querySelector(styles.home_profile);
+    const animation = document.querySelector(`.${styles.loading_home}`);
+    const head = document.querySelector(`.${styles.head_home}`);
+    const mainDiv = document.querySelector(`.${styles.main_homepage}`);
+    const cart = document.querySelector(`.${styles.home_cart}`);
+    const notification = document.querySelector(`.${styles.home_notification}`);
+    const profile = document.querySelector(`.${styles.home_profile}`);
 
     const isSharedBy = location.search
       ? new URLSearchParams(location.search)
@@ -225,8 +221,8 @@ const Home = ({ socket, SERVER_URL }) => {
       }
     };
     socket.on("lists-of-products-home", (product) => {
-      const animation = document.querySelector(styles.loading_home);
-      document.querySelector(styles.loading_main_homepage).style.display = "block";
+      const animation = document.querySelector(`.${styles.loading_home}`);
+      document.querySelector(`.${styles.loading_main_homepage}`).style.display = "block";
       sessionStorage.setItem("h_m_data_product", JSON.stringify(product.product));
       sessionStorage.setItem("h_m_data_top_img", JSON.stringify(product.top_img));
       sessionStorage.setItem("h_m_data_offer", JSON.stringify(product.offer));
@@ -243,7 +239,7 @@ const Home = ({ socket, SERVER_URL }) => {
         let b = User;
         b.reg_pkocd = false;
         localStorage.setItem("AUTH-T", JSON.stringify(b));
-        const error = document.querySelector(styles.error_home);
+        const error = document.querySelector(`.${styles.error_home}`);
         error.style.display = "block";
         error.innerText = "Internal server Error!";
         setTimeout(() => {
@@ -315,9 +311,9 @@ const Home = ({ socket, SERVER_URL }) => {
     return () => observer.disconnect();
   }, [product]);
   useEffect(() => {
-    const divScrollOne = document.querySelector(styles.three_div_one);
-    const divScrollTwo = document.querySelector(styles.three_div_two);
-    const divScrollThree = document.querySelector(styles.three_div_three);
+    const divScrollOne = document.querySelector(`.${styles.three_div_one}`);
+    const divScrollTwo = document.querySelector(`.${styles.three_div_two}`);
+    const divScrollThree = document.querySelector(`.${styles.three_div_three}`);
     socket.on("new-more-products-home", (newProduct) => {
       if (newProduct.id === 1) {
         let list = [...product["1"].list];
@@ -442,7 +438,7 @@ const Home = ({ socket, SERVER_URL }) => {
     };
   }, [product]);
   useEffect(() => {
-    const main = document.querySelector(styles.top_offers_home);
+    const main = document.querySelector(`.${styles.top_offers_home}`);
     if (!main) return;
     const price = document.querySelector(".top-offers-home #price");
     const time = document.querySelector(".top-offers-home #time");
@@ -488,7 +484,7 @@ const Home = ({ socket, SERVER_URL }) => {
   }, [offers]);
   useEffect(() => {
     if (topImg.status !== true) return;
-    const mD = document.querySelector(styles.list_fortop_imgs);
+    const mD = document.querySelector(`.${styles.list_fortop_imgs}`);
     if (!mD) return;
     const maxScroll = mD.scrollWidth - mD.clientWidth;
     let i = 0,
@@ -529,7 +525,7 @@ const Home = ({ socket, SERVER_URL }) => {
     return () => clearInterval(interval);
   }, [topImg]);
   useEffect(() => {
-    const mD = document.querySelector(styles.scrl_ctgy_hm);
+    const mD = document.querySelector(`.${styles.scrl_ctgy_hm}`);
     const element = document.querySelector(".scrl-ctgy-hm div");
     if (!mD || !categoryList || !element) return;
     let i = 0,
@@ -566,13 +562,13 @@ const Home = ({ socket, SERVER_URL }) => {
   }, [categoryList]);
   const checkMenu = useCallback(() => {
     if (menu === false) {
-      document.querySelector(styles.menu_home).style.width = "250px";
+      document.querySelector(`.${styles.menu_home}`).style.width = "250px";
       setTimeout(function () {
-        document.querySelector(styles.menu_home).classList.add("load-menu");
+        document.querySelector(`.${styles.menu_home}`).classList.add("load-menu");
       }, 400);
     } else {
-      document.querySelector(styles.menu_home).classList.remove("load-menu");
-      document.querySelector(styles.menu_home).style.width = "0";
+      document.querySelector(`.${styles.menu_home}`).classList.remove("load-menu");
+      document.querySelector(`.${styles.menu_home}`).style.width = "0";
     }
     setMenu((a) => !a);
   }, [menu]);
@@ -599,12 +595,12 @@ const Home = ({ socket, SERVER_URL }) => {
   };
   const switchPage = useCallback(
     (page) => {
-      const animation = document.querySelector(styles.loading_home);
-      const head = document.querySelector(styles.head_home);
-      const mainDiv = document.querySelector(styles.main_homepage);
-      const cart = document.querySelector(styles.home_cart);
-      const notification = document.querySelector(styles.home_notification);
-      const profile = document.querySelector(styles.home_profile);
+      const animation = document.querySelector(`.${styles.loading_home}`);
+      const head = document.querySelector(`.${styles.head_home}`);
+      const mainDiv = document.querySelector(`.${styles.main_homepage}`);
+      const cart = document.querySelector(`.${styles.home_cart}`);
+      const notification = document.querySelector(`.${styles.home_notification}`);
+      const profile = document.querySelector(`.${styles.home_profile}`);
       if (page === "home") {
         head.style.display = "flex";
         mainDiv.style.display = "block";
@@ -681,8 +677,8 @@ const Home = ({ socket, SERVER_URL }) => {
     id ? router.push(`/offer/${id}`) : router.push(`/offer`);
   };
   const openB = (For) => {
-    const div = document.querySelector(styles.btm_ph);
-    const bg = document.querySelector(styles.f_b_hp);
+    const div = document.querySelector(`.${styles.btm_ph}`);
+    const bg = document.querySelector(`.${styles.f_b_hp}`);
     if (For === "edit") {
       div.style.display = "block";
       bg.style.filter = "blur(1px)";
@@ -734,12 +730,12 @@ const Home = ({ socket, SERVER_URL }) => {
     }
   };
   const closeB = () => {
-    document.querySelector(styles.btm_ph).style.display = "none";
-    document.querySelector(styles.f_b_hp).style.filter = "none";
+    document.querySelector(`.${styles.btm_ph}`).style.display = "none";
+    document.querySelector(`.${styles.f_b_hp}`).style.filter = "none";
   };
   const openPp = () => {
-    document.querySelector(styles.popup_hp).style.display = "block";
-    document.querySelector(styles.f_b_hp).style.filter = "blur(3px)";
+    document.querySelector(`.${styles.popup_hp}`).style.display = "block";
+    document.querySelector(`.${styles.f_b_hp}`).style.filter = "blur(3px)";
   };
   const closePp = () => {
     setBhpup({
@@ -1514,4 +1510,3 @@ const Home = ({ socket, SERVER_URL }) => {
 };
 
 export default Home;
-
