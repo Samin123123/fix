@@ -1,1512 +1,772 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import styles from '../../styles/main.module.css'
-import Head from 'next/head';
-import { useRouter } from "next/router";
-import dynamic from 'next/dynamic';
-import NotificationList from "../components/notification";
-import ShimmerDownListLoading from "../components/list_down";
-// import ToggleButton from "../components/toggleButton";
-import { sleep } from "../utils/fn";
-import logo from "../../public/images/icon.png";
-import loading from "../../public/images/loading.gif";
-// import useMetadata from "../hooks/useMetadata"; // Adjust path as needed
-import EditProfile from "../components/home/editProfile";
-import ReferPolicys from "../components/home/refer";
-import SellerInfo from "../components/home/sellerInfo";
-import TypeRefer from "../components/home/typeRefer";
-import Address from "../components/home/address";
-import Sales from "../components/home/sale";
-import Earnig from "../components/home/earning";
+import React, { useState, useCallback, useEffect } from "react";
+import { sleep } from "../../fn/fn";
+import './order.css';
+import loading from "../../assets/loading.gif";
+import axios from 'axios';
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { FaRegCircleUser, FaMoneyBillTrendUp } from "react-icons/fa6";
-import {
-  CiLocationOn,
-  CiShoppingCart,
-  CiShop,
-  CiUser,
-} from "react-icons/ci";
-import { RiSecurePaymentLine, RiMoneyRupeeCircleLine } from "react-icons/ri";
-import {
-  IoIosPricetag,
-  IoMdSearch,
-  IoIosNotificationsOutline,
-  IoIosHeart,
-} from "react-icons/io";
-import { AiOutlineMenu } from "react-icons/ai";
-import { BiSupport } from "react-icons/bi";
-import { FaExchangeAlt, FaGithub, FaInstagram, FaWhatsapp } from "react-icons/fa";
-import { IoHeart, IoClose } from "react-icons/io5";
-import {
-  MdDownloadDone,
-  MdOutlineSupportAgent,
-  MdOutlineRateReview,
-} from "react-icons/md";
-import { LuMapPin, LuTruck } from "react-icons/lu";
 
-const ToggleButton = dynamic(() => import('../components/toggleButton'), {
-  ssr: false, // Disable SSR for this component
-});
+import { Bs1CircleFill, Bs2CircleFill, Bs3CircleFill } from "react-icons/bs";
+import { FaAddressCard, FaLocationDot } from "react-icons/fa6";
+import { MdOutlineNavigateNext } from "react-icons/md";
+import { FaSearch } from "react-icons/fa"
+import { LuSend } from "react-icons/lu";
 
-const Home = ({ socket, SERVER_URL }) => {
-  // const helmet = useMetadata("home");
-  const router = useRouter();
-  const [User, setUser] = useState(null);
-  const [accInfo, setAcc] = useState(false);
-  const [categoryList, setCategoryList] = useState(false);
-  const [latestProducts, setLatestProducts] = useState([]);
-  const [deliveryToggle, setDeliveryToggle] = useState(false);
-  const [sellerToggle, setSellerToggle] = useState(false);
-  const [accountToggle, setAccountToggle] = useState(false);
-  const [earnigToggle, setEarnigToggle] = useState(false);
-  const [cartMsg, setcartMsg] = useState({
-    status: false,
-    msg: "not found",
+
+export default function PlaceOrder({ socket, SERVER_URL }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const storedUser = localStorage.getItem("AUTH-T");
+  const User = storedUser ? JSON.parse(storedUser) : {};
+  const {id} = useParams();
+  const [up, setUp] = useState({
+    pd: false,
+    resave: false,
     list: [],
   });
-  const [topImg, setTopImg] = useState({
-    status: false,
-    img: [],
-  });
-  const [offers, setOffers] = useState({
-    status: false,
-    price: "not found",
-    title: "not found",
-    desc: "not found",
-    img: "not found",
-    id: false,
-  });
+  const [selectedColor, setSelectedColor] = useState('');
+  const [selectedSize, setSelectedSize] = useState('');
+  const [price, setPrice] = useState(0);
+  const [updated, setUpdated] = useState({});
+  const [addOff, setAddOff] = useState([]);
+  const [checkedOffers, setCheckedOffers] = useState({});
   const [product, setProduct] = useState({
     status: false,
-    1: {
-      scroll: 1,
-      px: 0,
-      head: "Today Offer's",
-      list: [],
+    info: {
+      subtitle: "idk",
+      img: "https://imgur.com/lVVR1Nb.jpeg",
+      desc: "idk",
+      discountPrice: 1,
+      size: [],
+      color: [],
     },
-    2: {
-      scroll: 1,
-      px: 0,
-      head: "Shoes",
-      list: [],
-    },
-    3: {
-      scroll: 1,
-      px: 0,
-      head: "Watches",
-      list: [],
-    },
+    offers: [],
+    contact: '+917025099154'
   });
-  const [events, setEvents] = useState({
-      1: {}, // data be like
-      2: {}, // img: for image, {status: must}
-      3: {}  // go: to redirect when clikes
-  });
-  const [notification, setNotification] = useState({
-    status: false,
-    list: [],
-  });
-  const [notifications, setNotifications] = useState({
-    status: true,
-    data: [],
-  });
-  const [bhpup, setBhpup] = useState({
-    status: false,
-    for: "",
-  });
-  const [menu, setMenu] = useState(false);
-  const contentRefs = useRef([]);
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const getCurrPath = sessionStorage.getItem("currentUrl");
-      if (!getCurrPath) {
-        sessionStorage.setItem("currentUrl", router.pathname);
-        sessionStorage.setItem("previousUrl", "undefined");
-      } else if (router.pathname !== getCurrPath) {
-        sessionStorage.setItem("previousUrl", getCurrPath);
-        sessionStorage.setItem("currentUrl", router.pathname);
-      }
-    }
-  }, [router.pathname]);
-  useEffect(() => {
-    const storedUser = localStorage.getItem("AUTH-T");
-    const User = storedUser ? JSON.parse(storedUser) : {};
-    setUser(User);
-    const rootes = ["cart", "notification", "account"];
-    const h_m_cart_cart = sessionStorage.getItem("h_m_cart_cart");
-    const h_m_notitification = sessionStorage.getItem("h_m_notitification");
-    if(h_m_cart_cart !== null)  {
-      setcartMsg(h_m_cart_cart);
+  const [select, setSelect] = useState("kerala");
+  const [town, setTown] = useState("");
+  const [an, setAn] = useState(false);
+  const [res, setRes] = useState([]);
+  const [page, setPage] = useState(1);
+  const [coupon, setCoupon] = useState(false);
+  useEffect(()=> {
+    const getCurrPath = sessionStorage.getItem("currentUrl");
+    if (!getCurrPath) {
+      sessionStorage.setItem("currentUrl", location.pathname);
+      sessionStorage.setItem("previousUrl", undefined);
+    } else if (location.pathname !== getCurrPath) {
+      sessionStorage.setItem("currentUrl", location.pathname);
+      sessionStorage.setItem("previousUrl", getCurrPath);
     };
-    if(h_m_notitification !== null) {
-      setNotification(h_m_notitification);
-    };
-    const h_m_data_product = sessionStorage.getItem("h_m_data_product");
-    const h_m_data_top_img = sessionStorage.getItem("h_m_data_top_img");
-    const h_m_data_offer = sessionStorage.getItem("h_m_data_offer");
-    const h_m_data_category = sessionStorage.getItem("h_m_data_category");
-    const h_m_data_latestProductsList = sessionStorage.getItem("h_m_data_latestProductsList");
-    const h_m_data_events = sessionStorage.getItem("h_m_data_events");
-    if(!h_m_data_top_img ||
-       !h_m_data_product ||
-       !h_m_data_offer ||
-       !h_m_data_category ||
-       !h_m_data_latestProductsList ||
-       !h_m_data_events) {
-        socket.emit("home-updates", {
-          auth: User,
-          pr: h_m_data_product !== null,
-          of: h_m_data_offer !== null,
-          ti: h_m_data_top_img !== null,
-          ca: h_m_data_category !== null,
-          la: h_m_data_latestProductsList !== null,
-          ev: h_m_data_events !== null,
-        });
-       } else {
-        document.querySelector(`.${styles.loading_home}`).style.display = "none";
-        document.querySelector(`.${styles.loading_main_homepage}`).style.display = "block";
-        if(h_m_data_product) setProduct(JSON.parse(h_m_data_product));
-        if(h_m_data_top_img) setTopImg(JSON.parse(h_m_data_top_img));
-        if(h_m_data_offer) setOffers(JSON.parse(h_m_data_offer));
-        if(h_m_data_category) setCategoryList(JSON.parse(h_m_data_category));
-        if(h_m_data_latestProductsList) setLatestProducts(JSON.parse(h_m_data_latestProductsList));
-        if(h_m_data_events) setEvents(JSON.parse(h_m_data_events));
-       };
-    const animation = document.querySelector(`.${styles.loading_home}`);
-    const head = document.querySelector(`.${styles.head_home}`);
-    const mainDiv = document.querySelector(`.${styles.main_homepage}`);
-    const cart = document.querySelector(`.${styles.home_cart}`);
-    const notification = document.querySelector(`.${styles.home_notification}`);
-    const profile = document.querySelector(`.${styles.home_profile}`);
-
-    const isSharedBy = location.search
-      ? new URLSearchParams(location.search)
-      : false;
-    const sharedAddress = isSharedBy ? isSharedBy.get("refer_smr_id") : false;
-    if (!User || !User.reg_pkocd) {
-      if (sharedAddress) {
-        localStorage.setItem(
-          "AUTH-T",
-          JSON.stringify({
-            from_ref_id: sharedAddress,
-            reg_pkocd: false,
-            next_my_ref: undefined,
-          })
-        );
-      }
-    }
-    if (location.hash) {
-      const hash = location.hash.substring(1);
-      if (rootes.includes(hash)) {
-        if (hash === "cart") {
-          animation.style.display = "none";
-          head.style.display = "flex";
-          mainDiv.style.display = "none";
-          cart.style.display = "block";
-          notification.style.display = "none";
-          profile.style.display = "none";
-          socket.emit("cart-update", {
-            auth: User,
-          });
-        } else if (hash === "notification") {
-          head.style.display = "flex";
-          mainDiv.style.display = "none";
-          cart.style.display = "none";
-          notification.style.display = "block";
-          profile.style.display = "none";
-          socket.emit("notification-update", {
-            auth: User,
-          });
-        } else {
-        }
-      }
-    };
-    socket.on("lists-of-products-home", (product) => {
-      const animation = document.querySelector(`.${styles.loading_home}`);
-      document.querySelector(`.${styles.loading_main_homepage}`).style.display = "block";
-      sessionStorage.setItem("h_m_data_product", JSON.stringify(product.product));
-      sessionStorage.setItem("h_m_data_top_img", JSON.stringify(product.top_img));
-      sessionStorage.setItem("h_m_data_offer", JSON.stringify(product.offer));
-      sessionStorage.setItem("h_m_data_category", JSON.stringify(product.category));
-      sessionStorage.setItem("h_m_data_latestProductsList", JSON.stringify(product.latestProductsList));
-      sessionStorage.setItem("h_m_data_events", JSON.stringify(product.events));
-      setProduct(product.product);
-      setTopImg(product.top_img);
-      setOffers(product.offer);
-      setCategoryList(product.category);
-      setLatestProducts(product.latestProductsList);
-      setEvents(product.events);
-      if (!product.client && User && User.reg_pkocd) {
-        let b = User;
-        b.reg_pkocd = false;
-        localStorage.setItem("AUTH-T", JSON.stringify(b));
-        const error = document.querySelector(`.${styles.error_home}`);
-        error.style.display = "block";
-        error.innerText = "Internal server Error!";
-        setTimeout(() => {
-          error.style.display = "none";
-        }, 2250);
-      } else {
-        setAcc(product.client);
-      }
+    if(!id) return navigate('/');
+    socket.emit('place-order-get-info', {auth: User, pid: id});
+    socket.on('place-order-info', (data) => {
+      if(data.status === true) document.querySelector('.lists-placeorder').style.display = 'block';
+      setPrice(data.info.discountPrice);
+      setProduct(data)
     });
-    if (User && User.reg_pkocd) {
-      socket.on("cart-updates", (list) => {
-        sessionStorage.setItem("h_m_cart_cart", JSON.stringify(list));
-        setcartMsg(list);
-      });
-      socket.on("notification-updates", (list) => {
-        sessionStorage.setItem("h_m_notitification", JSON.stringify(list));
-        setNotification(list);
-      });
-    } else {
-      const dateTimeNow = new Date().toLocaleString("en-US", {
-        timeZone: "Asia/Kolkata",
-        hour12: true,
-      });
-      const dateNow = dateTimeNow.split(",")[0].trim();
-      const timeNow = dateTimeNow.split(",")[1].trim();
-
-      setNotification({
-        status: true,
-        list: [
-          {
-            title: "Signup & get extra offer",
-            date: dateNow,
-            time: timeNow,
-            send: "inrl",
-            description:
-              "Sign up for your first product today and unlock exclusive extra offers on all our products!",
-          },
-          {
-            title: "Purchase & get Extra Upto 20%",
-            date: dateNow,
-            time: timeNow,
-            send: "inrl",
-            description:
-              "Sign up now and get up to 20% off on your first purchase!",
-          },
-        ],
-      });
-    };
+    socket.on('coupon-response', (data) => {
+    	if(data.status === true) {
+        setPrice(a=> (a - data.amount));
+        setCoupon(data.coupon);
+      } else {
+        const info = document.querySelector('.qick-info-buy');
+        info.innerText = `the ${data.coupon} coupon not found!`;
+        info.style.display = 'block';
+        setTimeout(()=>{info.style.display = 'none';}, 3000);
+      };
+    });
+    socket.on('result-offers', (data) => {
+      if(data.status === true) {
+        setPrice(a=> (a - data.amount));
+      } else {
+        const info = document.querySelector('.qick-info-buy');
+        info.innerText = 'unable to add offers at the moment!';
+        info.style.display = 'block';
+        setTimeout(()=>{info.style.display = 'none';}, 3000);
+      };
+    });
   }, []);
-  useEffect(() => {
-    if(!product.status) return;
-    const handleIntersection = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
+  useEffect(()=> {
+    const defaultValue = sessionStorage.getItem("set-done-info");
+  	if(defaultValue) {
+      const value = JSON.parse(defaultValue);
+      if(value.basic && value.id === id) {
+        const {color, size} = value.basic;
+        if(color) {
+          const element = document.getElementById(`s-color-buy${color}`);
+          setSelectedColor(color);
+          if(element) element.checked = true;
+        };
+        if(size) {
+          const element = document.getElementById(`s-size-buy${size}`);
+          setSelectedSize(size);
+          if(element) element.checked = true;
+        };
+      };
     };
-
-    // Create an Intersection Observer
-    const observer = new IntersectionObserver(handleIntersection, {
-      threshold: 0.1, // Trigger when 10% of the element is visible
-    });
-
-    // Observe each content element
-    contentRefs.current.forEach((ref) => ref && observer.observe(ref));
-
-    // Cleanup function to unobserve on component unmount
-    return () => observer.disconnect();
   }, [product]);
+  useEffect(()=> {
+    const p1p = document.querySelector('.adrs-t-by');
+    const p1i = document.querySelector('.adrs-slct-by');
+    const p2p = document.querySelector('.prdct-t-by');
+    const p2i = document.querySelector('.prdct-i-by');
+    const p3p = document.querySelector('.pymt-t-by');
+    const p3i = document.querySelector('.pymt-i-by');
+    if(page === 1) {
+      p1p.style.color = 'blue';
+      p1i.style.color = 'blue';
+      p2p.style.color = '#000';
+      p2i.style.color = '#000';
+      p3p.style.color = '#000';
+      p3i.style.color = '#000';
+    } else if(page === 2) {
+      p2p.style.color = 'blue';
+      p2i.style.color = 'blue';
+      p3p.style.color = '#000';
+      p3i.style.color = '#000';
+      p1p.style.color = '#000';
+      p1i.style.color = '#000';
+    } else if(page === 3) {
+      p3p.style.color = 'blue';
+      p3i.style.color = 'blue';
+      p2p.style.color = '#000';
+      p2i.style.color = '#000';
+      p1p.style.color = '#000';
+      p1i.style.color = '#000';
+    }
+  }, [page]);
   useEffect(() => {
-    const divScrollOne = document.querySelector(`.${styles.three_div_one}`);
-    const divScrollTwo = document.querySelector(`.${styles.three_div_two}`);
-    const divScrollThree = document.querySelector(`.${styles.three_div_three}`);
-    socket.on("new-more-products-home", (newProduct) => {
-      if (newProduct.id === 1) {
-        let list = [...product["1"].list];
-        list.pop();
-        list = list.concat(newProduct.list);
-        setProduct((a) => ({
-          description: a.description,
-          1: {
-            scroll: newProduct.scroll,
-            px: newProduct.px,
-            head: a["1"].head,
-            list: [...list],
-          },
-          2: {
-            ...a["2"],
-          },
-          3: {
-            ...a["3"],
-          },
-        }));
-      } else if (newProduct.id === 2) {
-        let list = [...product["2"].list];
-        list.pop();
-        list = list.concat(newProduct.list);
-        setProduct((a) => ({
-          description: a.description,
-          1: {
-            ...a["1"],
-          },
-          2: {
-            scroll: newProduct.scroll,
-            px: newProduct.px,
-            head: a["2"].head,
-            list: [...list],
-          },
-          3: {
-            ...a["3"],
-          },
-        }));
-      } else if (newProduct.id === 3) {
-        let list = [...product["3"].list];
-        list.pop();
-        list = list.concat(newProduct.list);
-        setProduct((a) => ({
-          description: a.description,
-          1: {
-            ...a["1"],
-          },
-          2: {
-            ...a["2"],
-          },
-          3: {
-            scroll: newProduct.scroll,
-            px: newProduct.px,
-            head: a["3"].head,
-            list: [...list],
-          },
-        }));
-      }
-    });
-    const scrollEventOne = (e) => {
-      const storedUser = localStorage.getItem("AUTH-T");
-      const User = storedUser ? JSON.parse(storedUser) : {};
-      const scrolled = e.target.scrollLeft + divScrollOne.clientWidth;
-      if (
-        scrolled === divScrollOne.scrollWidth &&
-        scrolled !== product["1"].px &&
-        product["1"].list.slice(-1)[0].type !== "done"
-      ) {
-        socket.emit("show-more-product-home", {
-          px: scrolled,
-          scroll: product["1"].scroll,
-          list: 1,
-          auth: User,
-          heading: product["1"].head,
-        });
-      }
+    const popup = document.querySelector(`.${styles.bottom_buy}`);
+    const line = document.querySelector(`.${styles.line_bt_by}`);
+    const close = document.querySelector(".bottom-buy span");
+    const db = localStorage.getItem("adrs");
+    const json = db ? JSON.parse(db) : {};
+    if (json.location && !up.pd) {
+      setUp({
+        pd: true,
+        resave: false,
+        list: [...json.location],
+      });
+      popup.style.height = "max-content";
+      close.style.display = "block";
+      line.style.display = "none";
+    }
+
+    const locations = document.querySelectorAll(".l-i-d-buy");
+    const handleClick = (e) => {
+      const nameBuy = document.getElementById("name-buy");
+      const numberBuy = document.getElementById("number-buy");
+      const pincodeBuy = document.getElementById("pincode-buy");
+      const stateBuy = document.getElementById("state-buy");
+      const cityBuy = document.getElementById("city-buy");
+      const townBuy = document.getElementById("town-buy");
+      const lndMrkBuy = document.getElementById("lndmrk-buy");
+      const adrsBuy = document.getElementById("adrs-buy");
+      const element = e.target.id.replace("radioButtonBuyBottom", "");
+      const data = json.location[element];
+      nameBuy.value = data.name;
+      numberBuy.value = data.number;
+      pincodeBuy.value = data.pincode;
+      stateBuy.value = data.state;
+      cityBuy.value = data.city;
+      townBuy.value = data.town;
+      lndMrkBuy.value = data.landMark;
+      adrsBuy.value = data.address;
+      popup.style.height = "35px";
+      line.style.display = "block";
+      close.style.display = "none";
+      setUp((a) => ({
+        ...a,
+        resave: true,
+      }));
     };
-    const scrollEventTwo = (e) => {
-      const storedUser = localStorage.getItem("AUTH-T");
-      const User = storedUser ? JSON.parse(storedUser) : {};
-      const scrolled = e.target.scrollLeft + divScrollTwo.clientWidth;
-      if (
-        scrolled === divScrollTwo.scrollWidth &&
-        scrolled !== product["2"].px &&
-        product["2"].list.slice(-1)[0].type !== "done"
-      ) {
-        socket.emit("show-more-product-home", {
-          px: scrolled,
-          scroll: product["2"].scroll,
-          list: 2,
-          auth: User,
-          heading: product["2"].head,
-        });
-      }
-    };
-    const scrollEventThree = (e) => {
-      const storedUser = localStorage.getItem("AUTH-T");
-      const User = storedUser ? JSON.parse(storedUser) : {};
-      const scrolled = e.target.scrollLeft + divScrollThree.clientWidth;
-      if (
-        scrolled === divScrollThree.scrollWidth &&
-        scrolled !== product["3"].px &&
-        product["3"].list.slice(-1)[0].type !== "done"
-      ) {
-        socket.emit("show-more-product-home", {
-          px: scrolled,
-          scroll: product["3"].scroll,
-          list: 3,
-          auth: User,
-          heading: product["3"].head,
-        });
-      }
-    };
-    divScrollOne.addEventListener("scroll", scrollEventOne);
-    divScrollTwo.addEventListener("scroll", scrollEventTwo);
-    divScrollThree.addEventListener("scroll", scrollEventThree);
+
+    if (locations) {
+      locations.forEach((a) => {
+        a.addEventListener("click", handleClick);
+      });
+    }
     return () => {
-      divScrollOne.removeEventListener("scroll", scrollEventOne);
-      divScrollTwo.removeEventListener("scroll", scrollEventTwo);
-      divScrollThree.removeEventListener("scroll", scrollEventThree);
+      if (locations) {
+        locations.forEach((a) => {
+          a.removeEventListener("click", handleClick);
+        });
+      }
     };
-  }, [product]);
-  useEffect(() => {
-    const main = document.querySelector(`.${styles.top_offers_home}`);
-    if (!main) return;
-    const price = document.querySelector(".top-offers-home #price");
-    const time = document.querySelector(".top-offers-home #time");
-    let interval;
-    if (offers.status) {
-      interval = setInterval(() => {
-        const time1 = new Date();
-        const timeNow = new Date()
-          .toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour12: false })
-          .split(",")[1]
-          .replace(/[^0-9:]/g, "")
-          .split(":");
-        time1.setHours(timeNow[0], timeNow[1], timeNow[2]);
-        const time2 = new Date();
-        time2.setHours(
-          offers.time.split(":")[0],
-          offers.time.split(":")[1],
-          offers.time.split(":")[2]
-        );
-        const timeDiff = time2.getTime() - time1.getTime();
-        const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-        price.innerText = offers.price;
-        time.innerText = `offer ends in ${hours} hour's,${minutes} minutes, ${seconds} seconds.`;
-        main.style.display = "flex";
-        if ((hours === 0 && minutes === 0 && seconds === 0) || seconds < 0) {
-          main.style.display = "none";
-          setOffers({
-            status: false,
-            price: "not found",
-            title: "not found",
-            desc: "not found",
-            img: "not found",
-          });
-          clearInterval(interval);
-        }
-      }, 1000);
-    } else if (!offers.status) {
-      main.style.display = "none";
-      //clearInterval(interval)
-    }
-  }, [offers]);
-  useEffect(() => {
-    if (topImg.status !== true) return;
-    const mD = document.querySelector(`.${styles.list_fortop_imgs}`);
-    if (!mD) return;
-    const maxScroll = mD.scrollWidth - mD.clientWidth;
-    let i = 0,
-      isInTouch = false;
-
-    const interval = setInterval(() => {
-      if (isInTouch === false) {
-        const previousDot = document.querySelector(".topdots" + i);
-        if (previousDot) previousDot.classList.remove("new-classfordot");
-
-        i = (i + 1) % topImg.img.length;
-
-        const currentDot = document.querySelector(".topdots" + i);
-        if (currentDot) currentDot.classList.add("new-classfordot");
-
-        const scrollAmount = mD.clientWidth * i;
-        if (scrollAmount > maxScroll) {
-          mD.scrollTo({
-            left: 0,
-            behavior: "smooth",
-          });
-        } else {
-          mD.scrollTo({
-            left: scrollAmount,
-            behavior: "smooth",
-          });
-        }
-      }
-    }, 2000);
-    function handleMouseOver() {
-      isInTouch = true;
-    }
-    function handleMouseOut() {
-      isInTouch = false;
-    }
-    mD.addEventListener("touchstart", handleMouseOver);
-    mD.addEventListener("touchend", handleMouseOut);
-    return () => clearInterval(interval);
-  }, [topImg]);
-  useEffect(() => {
-    const mD = document.querySelector(`.${styles.scrl_ctgy_hm}`);
-    const element = document.querySelector(".scrl-ctgy-hm div");
-    if (!mD || !categoryList || !element) return;
-    let i = 0,
-      isInTouch = false;
-    let scrollAmount = 0;
-    const interval = setInterval(() => {
-      if (isInTouch === false) {
-        i = (i + 1) % categoryList.length;
-
-        scrollAmount += element.offsetWidth;
-        if (scrollAmount >= mD.scrollWidth) {
-          scrollAmount = 0;
-          mD.scrollTo({
-            left: 0,
-            behavior: "smooth",
-          });
-        } else {
-          mD.scrollTo({
-            left: scrollAmount,
-            behavior: "smooth",
-          });
-        }
-      }
-    }, 2000);
-    function handleMouseOver() {
-      isInTouch = true;
-    }
-    function handleMouseOut() {
-      isInTouch = false;
-    }
-    mD.addEventListener("touchstart", handleMouseOver);
-    mD.addEventListener("touchend", handleMouseOut);
-    return () => clearInterval(interval);
-  }, [categoryList]);
-  const checkMenu = useCallback(() => {
-    if (menu === false) {
-      document.querySelector(`.${styles.menu_home}`).style.width = "250px";
-      setTimeout(function () {
-        document.querySelector(`.${styles.menu_home}`).classList.add("load-menu");
-      }, 400);
+  }, [up]);
+  
+  const handleCheckboxChange = useCallback((id, oid, title) => {
+    if(title === 'login discount' && !User) {
+      return navigate('/login', {replace: true});
+    } else if(title === 'first purchase discount' && !User) {
+      return navigate('/login', {replace: true});
     } else {
-      document.querySelector(`.${styles.menu_home}`).classList.remove("load-menu");
-      document.querySelector(`.${styles.menu_home}`).style.width = "0";
-    }
-    setMenu((a) => !a);
-  }, [menu]);
-  const cartUpdate = (id, f, a) => {
-    a.isOnCart = f;
-    const element = document.getElementById("cart-p" + id);
-    element.style.color = f ? "red" : "gray";
-    if(User && User.reg_pkocd) {
-      f ? socket.emit("add-to-cart", { auth: User, id }) : socket.emit("remove-from-cart", { id, auth: User });
-    }
+  const offer = [...addOff]
+  if(!offer.includes(oid)) {
+    setAddOff([...offer, oid]);
+  } else {
+    setAddOff(offer.filter(a=>a!==oid));
   };
-  const inputHome = async (e) => {
-    e.preventDefault();
-    const text = document.querySelector(".home-search #input");
-    if (!text.value) {
-      text.placeholder = "Enter something to search...";
-      text.style.border = "1px solid red";
-      await sleep(2000);
-      text.style.border = "1px solid #000";
-      text.placeholder = "Search for Products...";
-    } else {
-      router.push(`/search`, { state: { id: text.value } });
+    setCheckedOffers(prevState => ({
+      ...prevState,
+      [id]: !prevState[id]
+    }));
     }
-  };
-  const switchPage = useCallback(
-    (page) => {
-      const animation = document.querySelector(`.${styles.loading_home}`);
-      const head = document.querySelector(`.${styles.head_home}`);
-      const mainDiv = document.querySelector(`.${styles.main_homepage}`);
-      const cart = document.querySelector(`.${styles.home_cart}`);
-      const notification = document.querySelector(`.${styles.home_notification}`);
-      const profile = document.querySelector(`.${styles.home_profile}`);
-      if (page === "home") {
-        head.style.display = "flex";
-        mainDiv.style.display = "block";
-        cart.style.display = "none";
-        notification.style.display = "none";
-        profile.style.display = "none";
-        if (!product.status) {
-          socket.emit("home-updates", { auth: User });
-          animation.style.display = "block";
-        }
-      } else if (page === "cart") {
-        head.style.display = "flex";
-        mainDiv.style.display = "none";
-        cart.style.display = "block";
-        notification.style.display = "none";
-        profile.style.display = "none";
-        if (!cartMsg.status) {
-          socket.emit("cart-update", {
-            auth: User,
-          });
-        }
-      } else if (page === "notification") {
-        head.style.display = "flex";
-        mainDiv.style.display = "none";
-        cart.style.display = "none";
-        notification.style.display = "block";
-        profile.style.display = "none";
-        if (!notification.status) {
-          socket.emit("notification-update", {
-            auth: User,
-          });
-        }
-      } else if (page === "profile") {
-        head.style.display = "none";
-        mainDiv.style.display = "none";
-        cart.style.display = "none";
-        notification.style.display = "none";
-        profile.style.display = "block";
-      }
-    },
-    [product, notification, cartMsg, User]
-  );
-
-  const removeFromCart = useCallback(
+  }, [addOff]);
+  
+  const saveSize = useCallback(
     (id) => {
-      const icon = document.getElementById(id);
-      if (icon.style.color === "gray") {
-        icon.style.color = "red";
-        socket.emit("add-to-cart", {
-          id: id.replace("cart-cc", ""),
-          auth: User,
-        });
+      const size = [...product.info.size][id];
+      setUpdated((a) => ({
+        ...a,
+        size: size,
+      }));
+    },
+    [product, updated],
+  );
+  const submit = useCallback((e) => {
+      e.preventDefault();
+      const nameBuy = document.getElementById("name-buy").value;
+      const numberBuy = document.getElementById("number-buy").value;
+      const pincodeBuy = document.getElementById("pincode-buy").value;
+      const stateBuy = document.getElementById("state-buy").value;
+      const cityBuy = document.getElementById("city-buy").value;
+      const townBuy = document.getElementById("town-buy").value;
+      const lndMrkBuy = document.getElementById("lndmrk-buy").value;
+      const adrsBuy = document.getElementById("adrs-buy").value;
+      if (
+        !nameBuy ||
+        !numberBuy ||
+        !pincodeBuy ||
+        !stateBuy ||
+        !cityBuy ||
+        !townBuy ||
+        !lndMrkBuy ||
+        !adrsBuy
+      ) {
+        alert("Please fill in all the fields.");
       } else {
-        icon.style.color = "gray";
-        socket.emit("remove-from-cart", {
-          id: id.replace("cart-cc", ""),
-          auth: User,
-        });
+        const local = localStorage.getItem("adrs");
+        if (local && !up.resave) {
+          const data = {
+            location: [
+              ...JSON.parse(local).location,
+              {
+                name: nameBuy,
+                number: numberBuy,
+                pincode: pincodeBuy,
+                state: stateBuy,
+                city: cityBuy,
+                town: townBuy,
+                landMark: lndMrkBuy,
+                address: adrsBuy,
+              },
+            ],
+          };
+          localStorage.setItem("adrs", JSON.stringify(data));
+        } else if (!up.resave) {
+          const data = {
+            location: [
+              {
+                name: nameBuy,
+                number: numberBuy,
+                pincode: pincodeBuy,
+                state: stateBuy,
+                city: cityBuy,
+                town: townBuy,
+                landMark: lndMrkBuy,
+                address: adrsBuy,
+              },
+            ],
+          };
+          localStorage.setItem("adrs", JSON.stringify(data));
+        }
+        document.querySelector(`.${styles.address_buy}`).style.display = "none";
+        document.querySelector(`.${styles.payment_f_buy}`).style.display = "none";
+        document.querySelector(`.${styles.pr_info_buy}`).style.display = "block";
+        document.querySelector(`.${styles.bottom_buy}`).style.display = "none";
+        setPage(a=>(a+1))
       }
     },
-    [User]
-  );
-  const loginNow = () => {
-    localStorage.removeItem("AUTH-T")
-    router.push("/login");
+    [up]);
+  const compleate = () => {
+    document.querySelector(`.${styles.address_buy}`).style.display = "none";
+      document.querySelector(`.${styles.payment_f_buy}`).style.display = "block";
+      document.querySelector(`.${styles.pr_info_buy}`).style.display = "none";
+      document.querySelector(`.${styles.bottom_buy}`).style.display = "none";
+     setPage(a=>(a+1))
   };
-  const myOrder = (id) => {
-    return router.push("/myorders", { state: { id } });
-  };
-  const loadProduct = (id) => {
-    router.push("/product", { state: { id } });
-  };
-  const goToNewOffers = (id) => {
-    id ? router.push(`/offer/${id}`) : router.push(`/offer`);
-  };
-  const openB = (For) => {
-    const div = document.querySelector(`.${styles.btm_ph}`);
-    const bg = document.querySelector(`.${styles.f_b_hp}`);
-    if (For === "edit") {
-      div.style.display = "block";
-      bg.style.filter = "blur(1px)";
-      setBhpup({
-        status: true,
-        for: "edit",
-      });
-    } else if (For === "sale") {
-      div.style.display = "block";
-      bg.style.filter = "blur(1px)";
-      setBhpup({
-        status: true,
-        for: "sale",
-      });
-    } else if (For === "refer") {
-      div.style.display = "block";
-      bg.style.filter = "blur(1px)";
-      setBhpup({
-        status: true,
-        for: "refer",
-      });
-    } else if (For === "address") {
-      div.style.display = "block";
-      bg.style.filter = "blur(1px)";
-      setBhpup({
-        status: true,
-        for: "address",
-      });
-    } else if (For === "reviews") {
-      //return router.push('/activities/reviews');
-    } else if (For === "terms") {
-      //return router.push('/support/terms');
-    } else if (For === "right us") {
-      // return router.push('/support/rightus');
-    } else if (For === "earn") {
-      div.style.display = "block";
-      bg.style.filter = "blur(1px)";
-      setBhpup({
-        status: true,
-        for: "earn",
-      });
-    } else if (For === "typeRefer") {
-      div.style.display = "block";
-      bg.style.filter = "blur(1px)";
-      setBhpup({
-        status: true,
-        for: "typeRefer",
-      });
+  const loocap = useCallback(async () => {
+    const not = document.querySelector(`.${styles.qick_info_buy}`);
+    const value = document.getElementById("pincode-buy");
+    const label = document.querySelector(`label[for="pincode-buy"]`);
+    not.innerText = "looking up please wait";
+    if (!value.value) {
+      label.innerText = "Pincode cannot be empty.";
+      label.style.color = "red";
+    } else if (value.value.length !== 6) {
+      label.innerText = "Pincode must be exactly 6 digits.";
+      label.style.color = "red";
+    } else {
+      label.style.color = "#000";
+      not.style.display = "block";
+      not.style.animation = "poptob 3s";
+      if (an) {
+        not.style.animation = "none";
+        clearTimeout(an);
+        setAn(false);
+      }
+      setAn(setTimeout(() => {}, 3000));
+      not.style.animation = "vibrate 1s infinite";
+
+try {
+  const response = await axios.post(`${SERVER_URL}/api/grablocation`, {
+    pincode: value.value,
+    auth: {},
+  }, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = response.data;
+  if (!data.result.length) {
+    not.innerText = "no result found";
+  } else {
+    setSelect(data.result[0].State.toLowerCase());
+    document.getElementById("city-buy").value = data.result[0].City;
+    const office = data.result.map((a) => a.PostOfficeName);
+    setRes([...office]);
+    setTown(office[0]);
+    not.style.display = "none";
+  }
+} catch (error) {
+  console.log(error);
+}
     }
+  }, [an]);
+  const code = useCallback((e) => {
+    e.preventDefault();
+    const code = document.querySelector('.input-c-buy input');
+    const info = document.querySelector('.qick-info-buy');
+    if(!code.value) {
+      info.style.display = 'block';
+      info.innerText = "sponsor code can't be empty";
+      setTimeout(()=>{info.style.display = 'none'}, 3000);
+    } else {
+    	socket.emit('check-coupon', {pid: id, auth: User, coupon: code.value});
+      code.value = "";
+      info.style.display = 'block';
+      info.innerText = "please Wait a minut we are proceeding your request";
+      setTimeout(()=>{info.style.display = 'none'}, 3000);
+    }
+  }, [id, User]);
+  const toUp = () => {
+    document.querySelector(`.${styles.bottom_buy}`).style.height = "max-content";
+    document.querySelector(".bottom-buy span").style.display = "block";
+    document.querySelector(`.${styles.line_bt_by}`).style.display = "none";
   };
-  const closeB = () => {
-    document.querySelector(`.${styles.btm_ph}`).style.display = "none";
-    document.querySelector(`.${styles.f_b_hp}`).style.filter = "none";
+  const closePopup = () => {
+    document.querySelector(`.${styles.bottom_buy}`).style.height = "35px";
+    document.querySelector(".bottom-buy span").style.display = "none";
+    document.querySelector(`.${styles.line_bt_by}`).style.display = "block";
   };
-  const openPp = () => {
-    document.querySelector(`.${styles.popup_hp}`).style.display = "block";
-    document.querySelector(`.${styles.f_b_hp}`).style.filter = "blur(3px)";
+  const townChange = (event) => {
+    setTown(event.target.value);
   };
-  const closePp = () => {
-    setBhpup({
-      status: false,
-      for: "",
+  const handleChange = (event) => {
+    setSelect(event.target.value);
+  };
+  const getLocation = useCallback(async () => {
+    const not = document.querySelector(`.${styles.qick_info_buy}`);
+    if (an) {
+      not.style.animation = "none";
+      clearTimeout(an);
+      setAn(false);
+    }
+
+    if (navigator.geolocation) {
+      not.style.display = "block";
+      not.style.animation = "poptob 1s";
+      not.innerText = "please wait, locating your address!";
+      await sleep(1000);
+      not.style.animation = "vibrate 1s infinite";
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          if (!lat || !lon) {
+            not.style.display = "block";
+            not.style.animation = "poptob 3s";
+            not.innerText = "Unable to retrieve your location";
+
+            await sleep(3000);
+            not.style.display = "none";
+          } else {
+try {
+  const response = await axios.post(`${SERVER_URL}/api/getlocation`, {
+    lat,
+    lon,
+  }, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = response.data;
+
+  if (data.error) {
+    not.innerText = "no result found";
+    setAn(
+      setTimeout(() => {
+        not.style.animation = "none";
+        not.style.display = "none";
+      }, 3000),
+    );
+  } else {
+    not.style.animation = "none";
+    not.style.display = "none";
+    const pincodeBuy = document.getElementById("pincode-buy");
+    const stateBuy = document.getElementById("state-buy");
+    const cityBuy = document.getElementById("city-buy");
+    const townBuy = document.getElementById("town-buy");
+    const adrsBuy = document.getElementById("adrs-buy");
+    if (!pincodeBuy.value) {
+      pincodeBuy.value = data.address.postcode;
+    }
+    if (!stateBuy.value) {
+      stateBuy.value = data.address.state.toLowerCase();
+    }
+    if (!cityBuy.value) {
+      cityBuy.value = data.address.county;
+    }
+    if (!townBuy.value) {
+      townBuy.value = data.address.town;
+    }
+    adrsBuy.value = data.display_name;
+  }
+} catch (error) {
+  console.log(error);
+  alert("service unavailable");
+}
+
+          }
+        },
+        async (error) => {
+          not.style.display = "block";
+          not.style.animation = "poptob 3s";
+          not.innerText = "Unable to retrieve your location";
+
+          await sleep(3000);
+          not.style.display = "none";
+        },
+      );
+    } else {
+      not.style.display = "block";
+      not.style.animation = "poptob 3s";
+      not.innerText = "Geolocation is not supported by this browser";
+
+      await sleep(3000);
+      not.style.display = "none";
+    }
+  }, [an]);
+  const toWa = useCallback(() => {
+    const local = localStorage.getItem("adrs");
+    const adrsBuy = document.getElementById("adrs-buy").value;
+    const location = JSON.parse(local).location.filter(a=>a.address === adrsBuy);
+    const quantityInput = document.getElementById("quantity-buy");
+    const currentValue = parseInt(quantityInput.value);
+    socket.emit('place-order', {
+      info: {
+        color: selectedColor,
+        size: selectedSize,
+        quantity: currentValue,
+        ofr: addOff,
+        coupon: coupon
+      },
+      auth: User,
+      address: location[0],
+      pid: id
     });
-  };
-  const dltAcc = () => {};
-  const renderTo = (i) => {
-    return router.push(i);
-  };
+    window.location.href = `https://wa.me/${product.contact}?text=done`;
+  }, [coupon, addOff, selectedColor, selectedSize, product]);
+  const increase = useCallback(() => {
+    const quantityInput = document.getElementById("quantity-buy");
+    const currentValue = parseInt(quantityInput.value);
+    quantityInput.value = currentValue + 1;
+    setPrice((a) => a + product.info.discountPrice);
+  }, [product]);
 
+  const decrease = useCallback(() => {
+    const quantityInput = document.getElementById("quantity-buy");
+    const currentValue = parseInt(quantityInput.value);
+    if (currentValue > 1) {
+      quantityInput.value = currentValue - 1;
+      setPrice((a) => a - product.info.discountPrice);
+    }
+  }, [price, product]);
+  const setOffer = useCallback(() => {
+      const button = document.querySelector('.ofr-acpt-p-o');
+      const ofDiv = document.querySelector('.ofr-buy');
+      const info = document. querySelector('.qick-info-buy');
+    if(button.innerText !== 'add offerss') {
+      ofDiv.style.display = 'none';
+      info.innerText = 'new offers added';
+      info.style.display = 'block';
+      socket.emit('apply-offers', {ofr: addOff, pid: id});
+      setTimeout(()=>{info.style.display = 'none';}, 3000)
+    }
+  }, [addOff]);
   return (
-    <>
-    <Head>
-        <style>{`
-          img {
-            transition: transform 0.3s ease;
-          }
-        `}</style>
-      </Head>
-      <div>
-      {/* {helmet} */}
-      <NotificationList
-        socket={socket}
-        notifications={notifications}
-        setNotifications={setNotifications}
-      />
-      <header className={styles.head_home}>
-        {menu ? (
-          <IoClose onClick={checkMenu} className={styles.close} />
-        ) : (
-          <AiOutlineMenu onClick={checkMenu} className={styles.icon} />
-        )}
-        <img loading="lazy" className={styles.home_logo} src={logo} alt="Logo" />
-        <div className={styles.home_top_admin}></div>
-        <IoIosHeart className={styles.wish} />
-        <MdOutlineSupportAgent
-          className={styles.support}
-          onClick={() => renderTo("/support")}
-        />
-        {accInfo && accInfo.img ? (
-          <img loading="lazy" className={styles.user_logo} src={accInfo.img} />
-        ) : (
-          <FaRegCircleUser className={styles.show_user_info_home}></FaRegCircleUser>
-        )}
-      </header>
-      <div className={styles.menu_home}>
-        <a href="#home">Home</a>
-        <a href="#products">Products</a>
-        <a href="#sale">Sale Items</a>
-        <a href="#new-arrivals">New Arrivals</a>
-        <a href="#popular">Popular</a>
-        <a href="#categories">Categories</a>
-        <a href="#cart">Cart</a>
-        <a href="#wishlist">Wishlist</a>
-        <a href="#profile">Profile</a>
-      </div>
-      <div className={styles.main_homepage}>
-        <img loading="lazy" alt="Loading" className={styles.loading_home} src={loading} />
-        <div className={styles.loading_main_homepage}>
-          <form className={styles.home_search} onSubmit={inputHome}>
-            <input
-              type="text"
-              id="input"
-              placeholder="Search for Products..."
-            />
-            <IoMdSearch id="search" onClick={inputHome} />
-          </form>
-          <p className={styles.discount_msg}>
-            <CiLocationOn id="location" /> Add delivery location to check extra
-            discount
-          </p>
-          <div className={styles.users_attract}>
-            <div className={styles.secure_ua}>
-              <RiSecurePaymentLine className={styles.icon_ua} />
-              <p>secure transaction</p>
-            </div>
-            <div className={styles.delivery_ua}>
-              <LuTruck className={styles.icon_ua} />
-              <p>fast delivery</p>
-            </div>
-            <div className={styles.price_ua}>
-              <IoIosPricetag className={styles.icon_ua} />
-              <p>affordable price</p>
-            </div>
-            <div className={styles.support_ua}>
-              <BiSupport className={styles.icon_ua} />
-              <p>customer support</p>
-            </div>
-            <div className={styles.exchange_ua}>
-              <FaExchangeAlt className={styles.icon_ua} />
-              <p>easy exchange</p>
-            </div>
+    <div>
+    <div className={styles.qick_info_buy}>Inrl is the best</div>
+      {product.status === false ? (
+        <img className={styles.loading_buy} src={loading} alt="loading" />
+      ) : product.status === "error" ? (
+        <h4 className={styles.e_s_e_buy}>Internal server error!</h4>
+      ) : null}
+      <div className={styles.lists_placeorder}>
+      <div className={styles.buy_now}>
+        <div className={styles.hd_buy}>
+          <div className={styles.hd_b_t}>
+            <FaAddressCard className={styles.address_icon_buy}/>
+            <p>Add your Address</p>
           </div>
-          {topImg.status === true && topImg.img.length !== 0 ? (
-            <div className={styles.scrollable_imgs}>
-              <div className={styles.list_fortop_imgs}>
-                {topImg.img.map((a, i) => (
-                  <div
-                    className={styles.imgs_tos}
-                    key={i}
-                    onClick={() => renderTo(a.to)}
-                  >
-                    <img loading="lazy" src={a.img} alt={a.to.replace(/_/g, " ")} />
-                  </div>
-                ))}
-              </div>
-              <div className={styles.for_list_dots}>
-                <div className={styles.for_shadow_todot}>
-                  {topImg.img.map((_, i) => (
-                    <p key={i} className={`topdots${i} dotslist-all`}></p>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ) : null}
-          {
-            events[1] && <img loading="lazy" className={styles.events_img} src={events[1].img} alt={events[1].go} onClick={() => renderTo(events[1].go)} />
-          }
-          {offers.status === true ? (
-            <div
-              className={styles.top_offers_home}
-              onClick={() => goToNewOffers(offers.id)}
-            >
-              <img loading="lazy" src={offers.img} alt="today offer" />
-              <div id="infos">
-                <p id="title">{offers.title}</p>
-                <p id="desc">{offers.desc}</p>
-                <p id="price">loading...</p>
-                <p id="time">not found</p>
-              </div>
-            </div>
-          ) : null}
-          <div className={styles.three_div_one}>
-          <h2 className={styles.catogery_div_one}>{product["1"].head}</h2>
-          <div className={styles.divsion}>
-          {product["1"].list.map((a, index) =>
-              a.type === "loading" ? (
-                <div key={index} className={styles.prodcts_list_home}>
-                  <img loading="lazy"
-                    alt="Loading"
-                    className={styles.last_loading_product}
-                    src={loading}
-                  />
-                </div>
-              ) : a.type === "done" ? (
-                <div key={index} className={styles.prodcts_list_home}>
-                  <h3>There have no more products to load</h3>
-                </div>
-              ) : (
-                <div
-                  key={index}
-                  className={styles.prodcts_list_home}
-                  id={"infoPLH" + a.id}
-                >
-                  <div
-                    className={styles.product_info_home}
-                    id={"infoPIH" + a.id}
-                  >
-                    <div className={styles.image}>
-                    <IoIosHeart
-                        className={styles.heart}
-                        id={"cart-p" + a.id}
-                        onClick={() => cartUpdate(a.id, a.isOnCart ? false : true, a)}
-                        size={25}
-                        style={{
-                          color: a.isOnCart ? "red" : "gray",
-                        }}
-                      />
-                      <img loading="lazy" 
-                      alt={a.name} 
-                      src={a.img}
-                      onClick={() => loadProduct(a.id)}
-                      />
-                      <p>{Math.ceil(((a.price-a.discountPrice) / a.price) * 100)}% discount</p>
-                    </div>
-                    <div onClick={() => loadProduct(a.id)}>
-                    <p id="name">{a.name}</p>
-                    <p id="price">
-                      Price: ₹{a.price}
-                      <del>₹{a.discountPrice}</del>
-                    </p>
-                    <p
-                      id="desc"
-                      dangerouslySetInnerHTML={{ __html: a.description }}
-                    />
-                    </div>
-                  </div>
-                  <div className={styles.product_onclick_hm} id={"infoANH" + a.id}>
-                    <img loading="lazy"
-                      alt="p-bh"
-                      src={loading}
-                      className={styles.last_loading_product}
-                    />
-                  </div>
-                </div>
-              )
-            )}
-          </div>
-          </div>
-          {
-            events[2] && <img loading="lazy" className={styles.events_img} src={events[2].img} alt={events[2].go} onClick={() => renderTo(events[2].go)} />
-          }
-          <div className={styles.top_category_home_sl}>
-            <h2>Trending Categorys</h2>
-            <div className={styles.scrl_ctgy_hm}>
-              {categoryList &&
-                categoryList.map((a, i) => (
-                  <div key={i} onClick={() => renderTo(`/category/${a.to}`)}>
-                    <img loading="lazy" src={a.img} alt={a.to} />
-                  </div>
-                ))}
-            </div>
-          </div>
-          <div className={styles.three_div_two}>
-          <h2 className={styles.catogery_div}>{product["2"].head}</h2>
-          <div className={styles.divsion}>
-          {product["2"].list.map((a, index) =>
-              a.type === "loading" ? (
-                <div key={index} className={styles.prodcts_list_home}>
-                  <img loading="lazy"
-                    alt="Loading"
-                    className={styles.last_loading_product}
-                    src={loading}
-                  />
-                </div>
-              ) : a.type === "done" ? (
-                <div key={index} className={styles.prodcts_list_home}>
-                  <h3>There have no more products to load</h3>
-                </div>
-              ) : (
-                <div
-                  key={index}
-                  className={styles.prodcts_list_home}
-                  id={"infoPLH" + a.id}
-                >
-                  <div
-                    className={styles.product_info_home}
-                    id={"infoPIH" + a.id}
-                  >
-                    <div className={styles.image}>
-                    <IoIosHeart
-                        className={styles.heart}
-                        id={"cart-p" + a.id}
-                        onClick={() => cartUpdate(a.id, a.isOnCart ? false : true, a)}
-                        size={25}
-                        style={{
-                          color: a.isOnCart ? "red" : "gray",
-                        }}
-                      />
-                      <img loading="lazy" 
-                      alt={a.name} 
-                      src={a.img}
-                      onClick={() => loadProduct(a.id)}
-                      />
-                      <p>{Math.ceil(((a.price-a.discountPrice) / a.price) * 100)}% discount</p>
-                    </div>
-                    <div onClick={() => loadProduct(a.id)}>
-                    <p id="name">{a.name}</p>
-                    <p id="price">
-                      Price: ₹{a.price}
-                      <del>₹{a.discountPrice}</del>
-                    </p>
-                    <p
-                      id="desc"
-                      dangerouslySetInnerHTML={{ __html: a.description }}
-                    />
-                    </div>
-                  </div>
-                  <div className={styles.product_onclick_hm} id={"infoANH" + a.id}>
-                    <img loading="lazy"
-                      alt="Loading"
-                      src={loading}
-                      className={styles.last_loading_product}
-                    />
-                  </div>
-                </div>
-              )
-            )}
-          </div>
-          </div>
-          <div className={styles.three_div_three}>
-          <h2 className={styles.catogery_div}>{product["3"].head}</h2>
-          <div className={styles.divsion}>
-          {product["3"].list.map((a, index) =>
-              a.type === "loading" ? (
-                <div key={index} className={styles.prodcts_list_home}>
-                  <img loading="lazy"
-                    alt="Loading"
-                    className={styles.last_loading_product}
-                    src={loading}
-                  />
-                </div>
-              ) : a.type === "done" ? (
-                <div key={index} className={styles.prodcts_list_home}>
-                  <h3>There have no more products to load</h3>
-                </div>
-              ) : (
-                <div
-                  key={index}
-                  className={styles.prodcts_list_home}
-                  id={"infoPLH" + a.id}
-                >
-                  <div
-                    className={styles.product_info_home}
-                    id={"infoPIH" + a.id}
-                  >
-                    <div className={styles.image}>
-                      <IoIosHeart
-                        className={styles.heart}
-                        id={"cart-p" + a.id}
-                        onClick={() => cartUpdate(a.id, a.isOnCart ? false : true, a)}
-                        size={25}
-                        style={{
-                          color: a.isOnCart ? "red" : "gray",
-                        }}
-                      />
-                      <img loading="lazy" 
-                      alt={a.name} 
-                      src={a.img}
-                      onClick={() => loadProduct(a.id)}
-                      />
-                      <p>{Math.ceil(((a.price-a.discountPrice) / a.price) * 100)}% discount</p>
-                    </div>
-                    <div onClick={() => loadProduct(a.id)}>
-                    <p id="name">{a.name}</p>
-                    <p id="price">
-                      Price: ₹{a.price}
-                      <del>₹{a.discountPrice}</del>
-                    </p>
-                    <p
-                      id="desc"
-                      dangerouslySetInnerHTML={{ __html: a.description }}
-                    />
-                    </div>
-                  </div>
-                  <div className={styles.product_onclick_hm} id={"infoANH" + a.id}>
-                    <img loading="lazy"
-                      alt="Loading"
-                      src={loading}
-                      className={styles.last_loading_product}
-                    />
-                  </div>
-                </div>
-              )
-            )}
-          </div>
-          </div>
-          <div className={styles.ltst_pr_hm}>
-            <h2>Latest Products</h2>
-            {latestProducts.map((a, i) => (
-              <div className={styles.listed_letst_p_hm} key={i} ref={(el) => (contentRefs.current[i] = el)}>
-                <IoIosHeart
-                  className={styles.heart}
-                  style={{
-                    color: a.isOnCart ? "red" : "gray",
-                  }}
-                />
-                {!a.isAvailable && <div id="non-ltst">item not available</div>}
-                <div className={styles.tlist_img_ltst_hm}>
-                  <img loading="lazy"
-                    src={a.img}
-                    alt={a.subtitle}
-                    style={{
-                      filter: a.isAvailable ? "none" : "blur(1px)",
-                    }}
-                  />
-                </div>
-                <div
-                  className={styles.data_ltst_hm}
-                  style={{
-                    filter: a.isAvailable ? "none" : "blur(1px)",
-                  }}
-                >
-                  <p id="name-ltst">{a.subtitle}</p>
-                  <p id="prs-lts">
-                    ₹ {a.discountPrice}
-                    <del>₹ {a.price}</del>
-                  </p>
-                  <p id="buy" onClick={() => loadProduct(a.pid)}>buy</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <footer>
-            <div>
-              <h3>About Inrl.online</h3>
-              <p>
-                Your trusted online shopping destination for shoes, watches,
-                AirPods, toys, and more. Fast 2-day delivery across Kerala.
-              </p>
-            </div>
-
-            <div>
-              <h4>Contact Us</h4>
-              <p>
-                Email:{" "}
-                <a href="mailto:inrlwabots@gmail.com">support@inrl.online</a>
-              </p>
-              <p>
-                Phone: <a href="tel:+917025099154">+91-702-509-9154</a>
-              </p>
-              <p>Address: Mavoor, kozikode , Kerala, India</p>
-            </div>
-
-            <div className={styles.social_links}>
-              <h4>Follow Us</h4>
-              <a href="https://www.instagram.com/inrl.cc" className={styles.instagram}>
-              <FaInstagram className={styles.icon} size={20} />Instagram
-              </a>
-              <a href="https://github.com/i-nrl" className={styles.github}>
-              <FaGithub className={styles.icon} size={20}/>Github
-              </a>
-              <a
-                href="https://chat.whatsapp.com/K61qQwFg00L2xOlqZqzoNn"
-                className={styles.wa}
-              >
-                <FaWhatsapp className={styles.icon} size={20}/>WhatsApp Group
-              </a>
-            </div>
-
-            <div>
-              <h4>Trending Categories</h4>
-              <div className={styles.trending_links}>
-                <a href="/category/shoes">Shoes</a>
-                <a href="/category/watches">Watches</a>
-                <a href="/category/airpods">AirPods</a>
-                <a href="/category/toys">Toys</a>
-              </div>
-            </div>
-
-            <div>
-              <h4>Important Information</h4>
-              <p>
-                <span className={styles.important_icon}>⚠️</span>We collaborate with
-                various Instagram resellers. Please ensure the reseller is
-                trusted by verifying the Inrl badge. We are not responsible for
-                transactions with unverified resellers. If there is no Inrl
-                badge, trust yourself by checking their official Instagram
-                account, note thet the information provided by the seller.
-              </p>
-            </div>
-
-            <div className={styles.divider}>
-              <p>
-                &copy; 2024 <span className={styles.inrl_bold}>INRL</span>. All Rights
-                Reserved.
-              </p>
-            </div>
-          </footer>
-        </div>
-      </div>
-      <div className={styles.home_cart}>
-        {!User || !User.reg_pkocd ? (
-          <div className={styles.login_first}>
-            <h3>
-              For our records, we do not store any of your information before
-              you sign up.
-            </h3>
-            <button onClick={loginNow}>sign up.</button>
-          </div>
-        ) : !cartMsg.status ? (
-           <ShimmerDownListLoading />
-        ) : cartMsg.status && cartMsg.msg === "nothing" ? (
-          <h3 className={styles.null_cart}>
-            Explore our page further and shop for incredible deals today! Don't
-            miss out on our amazing products with nothing in your cart - start
-            adding items now!
-          </h3>
-        ) : cartMsg.status && cartMsg.list ? (
-          cartMsg.list.map((list, index) =>
-            list.type.includes("pending") ? (
-              <div
-                className={styles.pending_cart_b_hm}
-                key={index}
-                onClick={() => myOrder(list.id)}
-              >
-                <div className={styles.img_c_p_hm}>
-                  <img loading="lazy" alt={list.name} src={list.img} />
-                </div>
-                <div className={styles.info_c_p_hm}>
-                  <p className={styles.name_ca}>{list.name}</p>
-                  <p className={styles.ordr_at_hc}>
-                    ordered At: <span>{list.ordered}</span>
-                  </p>
-                  <p className={styles.dlvry_at_hc}>
-                    delivery At: <span>{list.delivery}</span>
-                  </p>
-                  {list.type === "pending:bot" ? (
-                    <p className={styles.wrn_hc}>this date may be change</p>
-                  ) : null}
-                  {list.discount ? (
-                    <div className={styles.pricess_ca}>
-                      <p className={styles.price_ca}>
-                        <span>₹</span> {list.total}
-                      </p>
-                      <p className={styles.actul_ca}>
-                        <del>{list.price}</del>
-                      </p>
-                    </div>
-                  ) : (
-                    <p className={styles.actul_ca}>
-                      <span>₹</span> {list.price}
-                    </p>
-                  )}
-                  <p className={styles.quantity_ca}>Qty: {list.quantity}</p>
-                </div>
-                <p
-                  className={styles.desc_ca}
-                  dangerouslySetInnerHTML={{ __html: list.desc }}
-                />
-              </div>
-            ) : (
-              <div key={index} className={styles.cart_list_home}>
-                <div
-                  className={styles.img_cart_fiv_hm}
-                  onClick={() => loadProduct(list.id)}
-                >
-                  <img loading="lazy" alt={list.name} src={list.img} />
-                </div>
-                <div className={styles.cart_infos}>
-                  <p className={styles.name_ca}>{list.name}</p>
-                  {list.type === "done" ? (
-                    <p className={styles.delivered_ca}>
-                      delivered <MdDownloadDone className={styles.icon_ca} />
-                    </p>
-                  ) : list.discount ? (
-                    <div className={styles.pricess_ca}>
-                      <p className={styles.price_ca}>
-                        <span>₹</span> {list.total}
-                      </p>
-                      <p className={styles.actul_ca}>
-                        <del>{list.price}</del>
-                      </p>
-                    </div>
-                  ) : (
-                    <p className={styles.actul_ca}>
-                      <span>₹</span> {list.price}
-                    </p>
-                  )}
-                  <p
-                    className={styles.desc_ca}
-                    dangerouslySetInnerHTML={{ __html: list.desc }}
-                    onClick={() => loadProduct(list.id)}
-                  />
-                  <p className={styles.quantity_ca}>Qty: {list.quantity}</p>
-                </div>
-                {list.type === "cart" ? (
-                  <IoHeart
-                    className={styles.save_ca}
-                    id={"cart-cc" + list.id}
-                    onClick={() => removeFromCart("cart-cc" + list.id)}
-                  />
-                ) : null}
-              </div>
-            )
-          )
-        ) : null}
-      </div>
-      <div className={styles.home_notification}>
-        {notification.status === false ? (
-          <img loading="lazy" alt="Loading" className={styles.loading_home} src={loading} />
-        ) : notification.status === null ? (
-          <h3>There are currently no notifications to display</h3>
-        ) : (
-          <div>
-            <h1>Notifications</h1>
-            {notification.list.map((a, i) => (
-              <div className={styles.notification_hm} key={i}>
-                <h2>{a.title}</h2>
-                <p className={styles.date_time}>{a.date + " " + a.time}</p>
-                <p className={styles.sent_by}>Sent by: {a.send}</p>
-                <p>{a.description}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      <div className={styles.home_profile}>
-        <div className={styles.popup_hp}>
-          <div className={styles.cnt_pp_hp}>
-            <p className={styles.cls_pp_hp} onClick={closePp}>
-              &times;
-            </p>
-            <h3>this action can't be retrievable!</h3>
-            <p className={styles.desc_pp_hp}>
-              do you really want remove your account?{" "}
-            </p>
-            <button onClick={closePp}>No</button>
-            <button onClick={dltAcc}>Yes</button>
+          <div className={styles.list_f_buy}>
+            <hr />
+            <Bs1CircleFill className={styles.adrs_slct_by}/>
+            <p className={styles.adrs_t_by}>address</p>
+            <Bs2CircleFill className={styles.prdct_i_by}/>
+            <p className={styles.prdct_t_by}>product info</p>
+            <Bs3CircleFill className={styles.pymt_i_by}/>
+            <p className={styles.pymt_t_by}>payment</p>
           </div>
         </div>
-        <div className={styles.f_b_hp}>
-          <h2>Basic info</h2>
-          <p className={styles.info_hp}>you are not logind</p>
-          <div className={styles.container_hp}>
-            <div className={styles.profile_header_hp}>
-              <img loading="lazy"
-                src={
-                  accInfo && accInfo.img
-                    ? accInfo.img
-                    : "https://i.imgur.com/JOkWGYr.jpeg"
-                }
-                alt="Profile Picture"
-              />
-              <div className={styles.user_info_hp}>
-                <p>
-                  <span>Name: </span>
-                  {accInfo ? accInfo.username : "not found"}
-                </p>
-                <p>
-                  <span>Email: </span>
-                  {accInfo ? accInfo.mail : "not found"}
-                </p>
-                <button
-                  className={styles.edit_button_hp}
-                  onClick={() => openB("edit")}
-                >
-                  {User && User.reg_pkocd ? "Edit Profile" : "Login"}
+        <form className={styles.address_buy} onSubmit={submit}>
+          <label htmlFor="name-buy">Enter your name</label>
+          <input type="text" id="name-buy" required={true} />
+          <label htmlFor="number-buy">Enter your number</label>
+          <input type="number" id="number-buy" required={true} />
+          <div className={styles.input_cl_buy}>
+            <div className={styles.pin_cd_d_buy}>
+              <label htmlFor="pincode-buy">Enter your pincode</label>
+              <input type="number" id="pincode-buy" required={true} />
+            </div>
+            <div className={styles.pin_cd_d_buy}>
+             <div className={styles.lookup_div_buy}>
+              <FaSearch className={styles.pincode_lookup_buy} onClick={loocap}/>
+             </div>
+              <div className={styles.loc_i_buy}>
+                <FaLocationDot className={styles.lctn_i_buy}/>
+                <button className={styles.location_buy} onClick={getLocation}>
+                  add location
                 </button>
               </div>
             </div>
           </div>
-          <h2>activities</h2>
-          <div className={styles.hm_act_pr}>
-            <button onClick={() => openB("sale")}>
-              <FaMoneyBillTrendUp className={styles.icon} />
-              sell through <span>INRL</span>
-            </button>
-            <button onClick={() => openB("refer")}>
-              <RiMoneyRupeeCircleLine className={styles.icon} />
-              refers and earn through <span>INRL</span>
-            </button>
-            <button onClick={() => openB("address")}>
-              <LuMapPin className={styles.icon} />
-              Update Address
-            </button>
-            <button onClick={() => openB("reviews")}>
-              <MdOutlineRateReview className={styles.icon} />
-              update my reviews
-            </button>
-          </div>
-          <h2>Feedback & Information</h2>
-          <div className={styles.notification_hm}>
-                <p>
-                    Delivery Notification{" "}
-                    <ToggleButton
-                        socket={socket}
-                        auth={User}
-                        toggle={deliveryToggle}
-                        setToggle={setDeliveryToggle}
-                        For="delivery_notification"
-                        className={styles.toggle}
-                    />
-                </p>
-                <p>
-                    Account Info{" "}
-                    <ToggleButton
-                        socket={socket}
-                        auth={User}
-                        toggle={accountToggle}
-                        setToggle={setAccountToggle}
-                        For="account_notification"
-                        className={styles.toggle}
-                    />
-                </p>
-                <p>
-                    Seller Notification{" "}
-                    <ToggleButton
-                        socket={socket}
-                        auth={User}
-                        toggle={sellerToggle}
-                        setToggle={setSellerToggle}
-                        For="seller_notification"
-                        className={styles.toggle}
-                    />
-                </p>
-                <p>
-                    My Earnings{" "}
-                    <ToggleButton
-                        socket={socket}
-                        auth={User}
-                        toggle={earnigToggle}
-                        setToggle={setEarnigToggle}
-                        For="earnigs_notification"
-                        className={styles.toggle}
-                    />
-                </p>
+          <div className={styles.input_group_buy}>
+            <div className={styles.stt_buy}>
+              <label htmlFor="state-buy">select your state</label>
+              <select id="state-buy" value={select} onChange={handleChange}>
+                <option value="andhra-pradesh">Andhra Pradesh</option>
+                <option value="arunachal-pradesh">Arunachal Pradesh</option>
+                <option value="assam">Assam</option>
+                <option value="bihar">Bihar</option>
+                <option value="chhattisgarh">Chhattisgarh</option>
+                <option value="goa">Goa</option>
+                <option value="gujarat">Gujarat</option>
+                <option value="haryana">Haryana</option>
+                <option value="himachal-pradesh">Himachal Pradesh</option>
+                <option value="jharkhand">Jharkhand</option>
+                <option value="karnataka">Karnataka</option>
+                <option value="kerala">Kerala</option>
+                <option value="madhya-pradesh">Madhya Pradesh</option>
+                <option value="maharashtra">Maharashtra</option>
+                <option value="manipur">Manipur</option>
+                <option value="meghalaya">Meghalaya</option>
+                <option value="mizoram">Mizoram</option>
+                <option value="nagaland">Nagaland</option>
+                <option value="odisha">Odisha</option>
+                <option value="punjab">Punjab</option>
+                <option value="rajasthan">Rajasthan</option>
+                <option value="sikkim">Sikkim</option>
+                <option value="tamil-nadu">Tamil Nadu</option>
+                <option value="telangana">Telangana</option>
+                <option value="tripura">Tripura</option>
+                <option value="uttar-pradesh">Uttar Pradesh</option>
+                <option value="uttarakhand">Uttarakhand</option>
+                <option value="west-bengal">West Bengal</option>
+                <option value="andaman-and-nicobar-islands">
+                  Andaman and Nicobar Islands
+                </option>
+                <option value="chandigarh">Chandigarh</option>
+                <option value="dadra-and-nagar-haveli-and-daman-and-diu">
+                  Dadra and Nagar Haveli and Daman and Diu
+                </option>
+                <option value="delhi">Delhi</option>
+                <option value="lakshadweep">Lakshadweep</option>
+                <option value="puducherry">Puducherry</option>
+              </select>
             </div>
-          <h2>Danger Zone</h2>
-          <div className={styles.dngr_hm}>
-            <button onClick={loginNow}>Logout</button>
-            <button onClick={openPp}>delete my account</button>
+            <div className={styles.stt_buy}>
+              <label htmlFor="city-buy">Enter your district</label>
+              <input type="text" id="city-buy" />
+            </div>
+          </div>
+          <label htmlFor="town-buy">Enter your Hometown</label>
+          {res.length === 0 ? (
+            <input type="text" id="town-buy" required={true} />
+          ) : res.length === 1 ? (
+            <input type="text" id="town-buy" required={true} />
+          ) : (
+            <select value={town} onChange={townChange} id="town-buy">
+              {res.map((a, i) => (
+                <option key={i} value={a}>
+                  {a}
+                </option>
+              ))}
+            </select>
+          )}
+          <label htmlFor="lndmrk-buy">Land Mark</label>
+          <input type="text" id="lndmrk-buy" placeholder="land mark of your destination" required={true} />
+          <label htmlFor="adrs-buy">Enter your address</label>
+          <input type="text" id="adrs-buy" required={true} />
+          <div className={styles.next_to_info_buy}>
+            <MdOutlineNavigateNext className={styles.next_page_buy}/>
+            <button className={styles.btn_nxt_ad_by} type="submit">
+            Next
+          </button>
+          </div>
+        </form>
+        <div className={styles.pr_info_buy}>
+            <div className={styles.img_aln_po}>
+          <img src={product.info.img} alt="reinfo" />
+            </div>
+          <div className={styles.s_i_buy_pr}>
+            <h3>{product.info.subtitle}</h3>
+            <p className={styles.dngrs_desc_po} dangerouslySetInnerHTML={{ __html: product.info.desc }} />
+            <hr />
+            <div className={styles.color_s_buy}>
+              <h4>color selection</h4>
+              {product.info.color !== "no" ? (
+                product.info.color.map((a, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      border: `1px solid ${a}`,
+                      color: a,
+                    }}
+                  >
+                    {a}
+                    <input
+                      className={styles.clr_s_buy}
+                      type="radio"
+                      name="colorz-buy"
+                      value={a}
+                      id={`s-color-buy${a}`}
+                      onChange={()=>setSelectedColor(a)}
+                    />
+                  </div>
+                ))
+              ) : (
+                <p>color selections not available</p>
+              )}
+            </div>
+            <div className={styles.size_s_buy}>
+              <h4>sizes selection</h4>
+              {product.info.size === "no" ? (
+                <p>size of this product not available</p>
+              ) : (
+                product.info.size.map((a, i) => (
+                  <div key={i}>
+                    {a}
+                    <input
+                      className={styles.size_i_buy}
+                      type="radio"
+                      name="sizes-buy"
+                      value={a}
+                      id={`s-size-buy${a}`}
+                      onChange={()=>setSelectedSize(a)}
+                    />
+                  </div>
+                ))
+              )}
+            </div>
+            {
+    product.offers.length ?
+            <div className={styles.ofr_buy}>
+          <div className={styles.li_ofr_po}>
+      {product.offers.map((a, i) => (
+        <div key={i} className={styles.offers_list_buy}>
+          <h4>{a.title}</h4>
+          <p>₹{a.price}</p>
+          <input
+            type="checkbox"
+            id={`offer-${i}`}
+            checked={!!checkedOffers[`offer-${i}`]}
+            onChange={() => handleCheckboxChange(`offer-${i}`, a.id, a.title)}
+          />
+        </div>
+      ))}
+    </div>
+              <button className={styles.ofr_acpt_p_o} onClick={setOffer}>{addOff.length ? `add ${addOff.length} offers` : 'add offers'}</button>
+        </div> : null
+            }
+            <form className={styles.code_aply_buy} onSubmit={code}>
+              <h4>enter code if you have</h4>
+          <div className={styles.code_apllay_buy}>
+            <div className={styles.input_c_buy}>
+                <input type="text" />               
+              </div>
+              <div className={styles.btn_u_cd_buy}>
+                <LuSend className={styles.send_code_buy} onClick={code}/>
+              </div>
+          </div>
+            </form>
+            <hr />
+            <div className={styles.quantity_selector}>
+              <h4>select quantity:</h4>
+              <div className={styles.toupord_b}>
+                <button type="button" onClick={decrease}>
+                  -
+                </button>
+                <input type="number" id="quantity-buy" defaultValue={1} />
+                <button type="button" onClick={increase}>
+                  +
+                </button>
+              </div>
+            </div>
+            <div className={styles.pay_mant_buy}>
+              total amount: <span>₹{price}</span>
+            </div>
+            <div className={styles.next_to_info_buy}>
+                <MdOutlineNavigateNext className={styles.next_page_buy}/>
+                <button className={styles.btn_nxt_ad_by} onClick={compleate}>Next</button>
+            </div>
           </div>
         </div>
-        <div className={styles.btm_ph}>
-          <p className={styles.cls_hp} onClick={closeB}>
-            &times;
-          </p>
-          <div className={styles.bt_cnt_hp}>
-            {bhpup.status === true ? (
-              <div className={styles.contents_hp}>
-                {bhpup.for === "edit" ? (
-                  <EditProfile
-                    auth={User}
-                    isLogind={!!User.reg_pkocd}
-                    userInfo={accInfo ? accInfo : {}}
-                    save={setBhpup}
-                    SERVER_URL={SERVER_URL}
-                    socket={socket}
-                  />
-                ) : bhpup.for === "refer" ? (
-                  <ReferPolicys
-                    auth={User}
-                    isLogind={!!User.reg_pkocd}
-                    save={setBhpup}
-                  />
-                ) : bhpup.for === "seller" ? (
-                  <SellerInfo isSeller={false} save={setBhpup} />
-                ) : bhpup.for === "typeRefer" ? (
-                  <TypeRefer isLogind={!!User.reg_pkocd} save={setBhpup} />
-                ) : bhpup.for === "address" ? (
-                  <Address />
-                ) : bhpup.for === "sale" ? (
-                  <Sales isLogind={!!User.reg_pkocd} save={setBhpup} />
-                ) : bhpup.for === "earn" ? (
-                  <Earnig isLogind={!!User.reg_pkocd} save={setBhpup} />
-                ) : null}
+        <div className={styles.payment_f_buy}>
+          <button className={styles.sent_updt_buy} onClick={toWa}>done</button></div>
+        <div className={styles.bottom_buy}>
+          <button className={styles.line_bt_by} onClick={toUp}></button>
+          <span onClick={closePopup}>&times;</span>
+          <div className={styles.list_l_buy}>
+            {up.list.map((a, i) => (
+              <div className={styles.l_i_d_buy} key={i}>
+                <h4>{a.number}</h4>
+                <p>{a.address}</p>
+                <input
+                  type="radio"
+                  className={styles.radio_button_b_buy}
+                  id={`radioButtonBuyBottom${i}`}
+                />
               </div>
-            ) : null}
+            ))}
           </div>
         </div>
       </div>
-      <div className={styles.bottom_home}>
-        <div className={styles.icon_bo}>
-          <CiShop
-            className={styles.icon}
-            id="home-icon-home"
-            onClick={() => switchPage("home")}
-          />
-          <p>Home</p>
-        </div>
-        <div className={styles.icon_bo}>
-          <CiShoppingCart
-            className={styles.icon}
-            id="home-icon-cart"
-            onClick={() => switchPage("cart")}
-          />
-          <p>Cart</p>
-        </div>
-        <div className={styles.icon_bo}>
-          <IoIosNotificationsOutline
-            className={styles.icon}
-            id="home-icon-notification"
-            onClick={() => switchPage("notification")}
-          />
-          <p>notification</p>
-        </div>
-        <div className={styles.icon_bo}>
-          <CiUser
-            className={styles.icon}
-            id="home-icon-profile"
-            onClick={() => switchPage("profile")}
-          />
-          <p>Profile</p>
-        </div>
       </div>
     </div>
-    </>
   );
-};
-
-export default Home;
+}
